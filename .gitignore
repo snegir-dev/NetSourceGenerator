@@ -1,0 +1,9 @@
+.idea
+
+SourceGenerate.RealTimeTests
+
+SourceGenerate/bin
+SourceGenerate/obj
+
+SourceGenerate.Tests/bin
+SourceGenerate.Tests/obj
