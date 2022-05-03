@@ -4,52 +4,54 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using SourceGenerate.Domain.Attributes;
+using SourceGenerate.Generators;
 
 namespace SourceGenerate.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class MustBePartialAnalyzer : DiagnosticAnalyzer
+public class NotMustBeStaticAnalyzer : DiagnosticAnalyzer
 {
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
-        ImmutableArray.Create(DiagnosticDescriptions.TypeMustBePartial);
+        ImmutableArray.Create(DiagnosticDescriptions.TypeNotMustBePartial);
 
     public override void Initialize(AnalysisContext context)
     {
         context.EnableConcurrentExecution();
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | 
                                                GeneratedCodeAnalysisFlags.ReportDiagnostics);
-
-        context.RegisterSyntaxNodeAction(CheckPartialModifier,
-            SyntaxKind.ClassDeclaration,
+        
+        context.RegisterSyntaxNodeAction(CheckNotStaticModifier, 
+            SyntaxKind.ClassDeclaration, 
             SyntaxKind.StructDeclaration);
     }
 
-    private static void CheckPartialModifier(SyntaxNodeAnalysisContext context)
+    private static void CheckNotStaticModifier(SyntaxNodeAnalysisContext context)
     {
-        var namedTypeSymbol = context.Compilation
-            .GetTypeByMetadataName(typeof(PartialAttribute).FullName!);
-        
-        if (namedTypeSymbol == null)
+        var nameTypeSymbol = context.Compilation
+            .GetTypeByMetadataName(typeof(NotStaticAttribute).FullName!);
+
+        if (nameTypeSymbol == null)
             return;
-
-        var isPartial = context.ContainingSymbol?.GetAttributes()
+        
+        var isStatic = context.ContainingSymbol?.GetAttributes()
             .Select(a => a.AttributeClass?.GetAttributes())
-            .Select(m => m!.Value
-                .Any(a => a.AttributeClass?.Name == nameof(PartialAttribute)))
+            .Select(i => i!.Value
+                .Any(a => a.AttributeClass?.Name == nameof(NotStaticAttribute)))
             .Any(b => b);
+        
 
-        if (isPartial == false)
+        if (isStatic == false)
             return;
         
         var node = (TypeDeclarationSyntax)context.Node;
 
-        if (node.Modifiers.Any(p => p.IsKind(SyntaxKind.PartialKeyword)))
+        if (!node.Modifiers.Any(p => p.IsKind(SyntaxKind.StaticKeyword)))
             return;
 
         var diagnostic = Diagnostic.Create(
-            DiagnosticDescriptions.TypeMustBePartial,
+            DiagnosticDescriptions.TypeNotMustBePartial,
             node.Identifier.GetLocation(), node.Identifier.Text);
-
+        
         context.ReportDiagnostic(diagnostic);
     }
 }
