@@ -2,6 +2,7 @@
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 [Partial]
+[NotStatic]
 public class BuilderAttribute : Attribute
 {
     
