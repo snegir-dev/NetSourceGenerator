@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
+        <IsRoslynComponent>true</IsRoslynComponent>
         <Nullable>enable</Nullable>
         <TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
         <LangVersion>10</LangVersion>

@@ -13,7 +13,7 @@ public class SingletonGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var types = context.SyntaxProvider
-            .CreateSyntaxProvider(_generatorHandler.IsFits, _generatorHandler.GetTypeSymbolOrNull)
+            .CreateSyntaxProvider(_generatorHandler.IsExistAttribute, _generatorHandler.GetTypeSymbolOrNull)
             .Where(type => type != null)
             .Collect();
 

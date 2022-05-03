@@ -13,7 +13,7 @@ public class GeneratorHandler
         _type = type;
     }
 
-    public bool IsFits(SyntaxNode node, CancellationToken cancellationToken)
+    public bool IsExistAttribute(SyntaxNode node, CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)
             return false;
@@ -48,7 +48,14 @@ public class GeneratorHandler
             : null;
     }
 
-    public static void Debug<T>(params T[] param)
+    public static void Debug<T>(IEnumerable<T> param)
+    {
+        var sw = new StreamWriter(@"E:\MeProgram\C#\SourceGenerate\SourceGenerate.RealTimeTests\NewFile1.txt", true);
+        sw.WriteLine(string.Join("\n", param));
+        sw.Dispose();
+    }
+
+    public static void Debug<T>(T param)
     {
         var sw = new StreamWriter(@"E:\MeProgram\C#\SourceGenerate\SourceGenerate.RealTimeTests\NewFile1.txt", true);
         sw.WriteLine(string.Join("\n", param));
