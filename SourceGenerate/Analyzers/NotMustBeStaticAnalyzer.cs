@@ -9,7 +9,7 @@ using SourceGenerate.Generators;
 namespace SourceGenerate.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class NotMustBeStaticAnalyzer : DiagnosticAnalyzer
+public class NotMustBeStaticAnalyzer : DiagnosticAnalyzer, IAnalyzer
 {
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
         ImmutableArray.Create(DiagnosticDescriptions.TypeNotMustBePartial);
@@ -20,12 +20,12 @@ public class NotMustBeStaticAnalyzer : DiagnosticAnalyzer
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | 
                                                GeneratedCodeAnalysisFlags.ReportDiagnostics);
         
-        context.RegisterSyntaxNodeAction(CheckNotStaticModifier, 
+        context.RegisterSyntaxNodeAction(((IAnalyzer)this).Check, 
             SyntaxKind.ClassDeclaration, 
             SyntaxKind.StructDeclaration);
     }
 
-    private static void CheckNotStaticModifier(SyntaxNodeAnalysisContext context)
+    void IAnalyzer.Check(SyntaxNodeAnalysisContext context)
     {
         var nameTypeSymbol = context.Compilation
             .GetTypeByMetadataName(typeof(NotStaticAttribute).FullName!);

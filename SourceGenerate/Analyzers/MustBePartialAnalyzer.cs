@@ -8,7 +8,7 @@ using SourceGenerate.Domain.Attributes;
 namespace SourceGenerate.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class MustBePartialAnalyzer : DiagnosticAnalyzer
+public class MustBePartialAnalyzer : DiagnosticAnalyzer, IAnalyzer
 {
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
         ImmutableArray.Create(DiagnosticDescriptions.TypeMustBePartial);
@@ -19,12 +19,12 @@ public class MustBePartialAnalyzer : DiagnosticAnalyzer
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | 
                                                GeneratedCodeAnalysisFlags.ReportDiagnostics);
 
-        context.RegisterSyntaxNodeAction(CheckPartialModifier,
+        context.RegisterSyntaxNodeAction(((IAnalyzer)this).Check,
             SyntaxKind.ClassDeclaration,
             SyntaxKind.StructDeclaration);
     }
 
-    private static void CheckPartialModifier(SyntaxNodeAnalysisContext context)
+    void IAnalyzer.Check(SyntaxNodeAnalysisContext context)
     {
         var namedTypeSymbol = context.Compilation
             .GetTypeByMetadataName(typeof(PartialAttribute).FullName!);

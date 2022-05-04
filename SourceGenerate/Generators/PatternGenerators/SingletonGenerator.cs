@@ -7,7 +7,7 @@ using SourceGenerate.Templates.Patterns;
 namespace SourceGenerate.Generators.PatternGenerators;
 
 [Generator]
-public class SingletonGenerator : IIncrementalGenerator
+public class SingletonGenerator : IIncrementalGenerator, IGenerator
 {
     private readonly GeneratorHandler _generatorHandler = new(typeof(SingletonAttribute));
 
@@ -18,10 +18,10 @@ public class SingletonGenerator : IIncrementalGenerator
             .Where(type => type != null)
             .Collect();
 
-        context.RegisterSourceOutput(types, GenerateCode);
+        context.RegisterSourceOutput(types, ((IGenerator)this).GenerateCode);
     }
 
-    private static void GenerateCode(SourceProductionContext context, ImmutableArray<ITypeSymbol?> symbols)
+    void IGenerator.GenerateCode(SourceProductionContext context, ImmutableArray<ITypeSymbol?> symbols)
     {
         if (symbols.IsDefaultOrEmpty)
             return;
