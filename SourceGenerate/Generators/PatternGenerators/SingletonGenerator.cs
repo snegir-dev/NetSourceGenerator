@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Formatting;
 using SourceGenerate.Domain.Attributes;
+using SourceGenerate.Templates.Patterns;
 
 namespace SourceGenerate.Generators.PatternGenerators;
 
@@ -40,31 +41,12 @@ public class SingletonGenerator : IIncrementalGenerator
     {
         if (symbol == null) return null;
 
-        var className = symbol.Name;
         var @namespace = symbol.ContainingNamespace.ToString()!;
+        var className = symbol.Name;
 
-        var partialClass =
-            $@"
-                using System;
-
-                namespace {@namespace};
-
-                partial class {className} 
-                {{
-                    private static {className} _instance;
-
-                    private {className}()
-                    {{
-                    }}
-
-                    public static {className} GetInstance()
-                    {{
-                        if (_instance == null)
-                            _instance = new {className}();
-                        return _instance;
-                    }}
-                }}
-            ";
+        var partialClass = SingletonTemplate.Template
+            .Replace("*namespace*", @namespace)
+            .Replace("*class-name*", className);
 
         return partialClass;
     }
