@@ -46,7 +46,8 @@ public class BuilderGenerator : IIncrementalGenerator, IGenerator
         var builderClassName = $"{type.Name}Builder";
         var methods = "";
         
-        var propertiesMember = MemberHandler.GetMemberPropertiesWithType(type);
+        var propertiesMember = MemberHandler
+            .GetMemberStringPropertiesWithType(type, Accessibility.Public);
 
         foreach (var property in propertiesMember)
         {

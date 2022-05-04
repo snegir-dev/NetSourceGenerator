@@ -1,21 +1,25 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace SourceGenerate.Generators;
 
 public static class MemberHandler
 {
-    public static Dictionary<string, ITypeSymbol> GetMemberPropertiesWithType(ITypeSymbol type)
+    public static Dictionary<string, ITypeSymbol> GetMemberStringPropertiesWithType(ITypeSymbol type,
+        params Accessibility[] accessModifiers)
     {
         var propertiesMember = new Dictionary<string, ITypeSymbol>();
 
         var members = type.GetMembers()
             .Where(p => !p.IsStatic &&
-                        p.DeclaredAccessibility == Accessibility.Public &&
                         p.Kind == SymbolKind.Field |
                         p.Kind == SymbolKind.Property)
             .ToList();
 
-        var t = members.Where(p => !p.IsStatic);
+        members = members
+            .Where(s => accessModifiers
+                .Any(k => k == s.DeclaredAccessibility))
+            .ToList();
 
         foreach (var member in members)
         {

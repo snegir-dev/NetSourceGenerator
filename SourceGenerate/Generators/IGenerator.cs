@@ -7,5 +7,5 @@ internal interface IGenerator
 { 
     void GenerateCode(SourceProductionContext context, ImmutableArray<ITypeSymbol?> symbols);
 
-    string? CreatePartialClass(ITypeSymbol type);
+    string CreatePartialClass(ITypeSymbol type);
 }
