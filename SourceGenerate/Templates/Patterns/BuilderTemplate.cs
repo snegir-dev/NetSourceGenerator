@@ -3,7 +3,7 @@
 public static class BuilderTemplate
 {
     public static string Template => GetTemplate();
-    
+     
     private static string GetTemplate()
     {
         return
@@ -16,21 +16,21 @@ public static class BuilderTemplate
                         {{
                             return new *builder-class-name*();
                         }}
-                    }}
 
-                    public class *builder-class-name*
-                    {{
-                        private *class-name* *lower-class-name*;
-                        public *builder-class-name*()
+                        public class *builder-class-name*
                         {{
-                            *lower-class-name* = new *class-name*();
-                        }}
+                            private *class-name* *lower-class-name*;
+                            public *builder-class-name*()
+                            {{
+                                *lower-class-name* = new *class-name*();
+                            }}
 
-                        *methods*
+                            *methods*
 
-                        public *class-name* Build()
-                        {{
-                            return *lower-class-name*;
+                            public *class-name* Build()
+                            {{
+                                return *lower-class-name*;
+                            }}
                         }}
                     }}
                 }}
