@@ -28,7 +28,7 @@ public class SingletonGenerator : IIncrementalGenerator, IGenerator
 
         foreach (var symbol in symbols)
         {
-            var partialClass = CreateSingletonClass(symbol);
+            var partialClass = ((IGenerator)this).CreatePartialClass(symbol);
 
             if (partialClass != null)
             {
@@ -37,7 +37,7 @@ public class SingletonGenerator : IIncrementalGenerator, IGenerator
         }
     }
 
-    private static string? CreateSingletonClass(ITypeSymbol? symbol)
+    string? IGenerator.CreatePartialClass(ITypeSymbol? symbol)
     {
         if (symbol == null) return null;
 

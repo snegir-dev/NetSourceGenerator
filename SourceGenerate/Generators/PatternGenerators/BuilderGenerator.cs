@@ -6,7 +6,7 @@ using SourceGenerate.Templates.Patterns;
 namespace SourceGenerate.Generators.PatternGenerators;
 
 [Generator]
-public class BuilderGenerator : IGenerator, IIncrementalGenerator
+public class BuilderGenerator : IIncrementalGenerator, IGenerator
 {
     private readonly GeneratorHandler _generatorHandler = new(typeof(BuilderAttribute));
 
@@ -27,7 +27,7 @@ public class BuilderGenerator : IGenerator, IIncrementalGenerator
 
         foreach (var type in symbols)
         {
-            var builderClass = CreateBuilderClass(type);
+            var builderClass = ((IGenerator)this).CreatePartialClass(type);
 
             if (builderClass != null)
             {
@@ -36,7 +36,7 @@ public class BuilderGenerator : IGenerator, IIncrementalGenerator
         }
     }
 
-    private string? CreateBuilderClass(ITypeSymbol? type)
+    string? IGenerator.CreatePartialClass(ITypeSymbol? type)
     {
         if (type == null)
             return null;
