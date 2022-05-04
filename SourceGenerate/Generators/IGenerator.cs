@@ -3,7 +3,9 @@ using Microsoft.CodeAnalysis;
 
 namespace SourceGenerate.Generators;
 
-public interface IGenerator
+internal interface IGenerator
 { 
     void GenerateCode(SourceProductionContext context, ImmutableArray<ITypeSymbol?> symbols);
+
+    string? CreatePartialClass(ITypeSymbol type);
 }
