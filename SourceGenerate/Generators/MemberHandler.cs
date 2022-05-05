@@ -16,9 +16,6 @@ public static class MemberHandler
                         !p.IsImplicitlyDeclared &&
                         p.Kind == SymbolKind.Field ||
                         p.Kind == SymbolKind.Property)
-            .ToList();
-
-        members = members
             .Where(s => accessModifiers
                 .Any(k => k == s.DeclaredAccessibility))
             .ToList();
