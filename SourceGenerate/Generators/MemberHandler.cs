@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Text.Json;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace SourceGenerate.Generators;
@@ -12,7 +13,8 @@ public static class MemberHandler
 
         var members = type.GetMembers()
             .Where(p => !p.IsStatic &&
-                        p.Kind == SymbolKind.Field |
+                        !p.IsImplicitlyDeclared &&
+                        p.Kind == SymbolKind.Field ||
                         p.Kind == SymbolKind.Property)
             .ToList();
 
