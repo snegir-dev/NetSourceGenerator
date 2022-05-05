@@ -30,15 +30,12 @@ public class NoArgsConstructorGenerator : IIncrementalGenerator, IGenerator
 
             var classWithNoArgsConstructor = ((IGenerator)this).CreatePartialClass(type);
 
-            if (classWithNoArgsConstructor != null)
-            {
-                context.AddSource($"{type.ContainingNamespace}{type.Name}.g.cs",
-                    classWithNoArgsConstructor);
-            }
+            context.AddSource($"{type.ContainingNamespace}{type.Name}.g.cs",
+                classWithNoArgsConstructor);
         }
     }
 
-    string? IGenerator.CreatePartialClass(ITypeSymbol type)
+    string IGenerator.CreatePartialClass(ITypeSymbol type)
     {
         var @namespace = type.ContainingNamespace.ToString();
         var className = type.Name;

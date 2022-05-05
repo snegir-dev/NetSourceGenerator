@@ -20,7 +20,7 @@ public class AllArgsConstructorGenerator : IIncrementalGenerator, IGenerator
         context.RegisterSourceOutput(types, ((IGenerator)this).GenerateCode);
     }
 
-    public void GenerateCode(SourceProductionContext context, ImmutableArray<ITypeSymbol?> symbols)
+    void IGenerator.GenerateCode(SourceProductionContext context, ImmutableArray<ITypeSymbol?> symbols)
     {
         if (symbols.IsDefaultOrEmpty) return;
 
@@ -48,28 +48,38 @@ public class AllArgsConstructorGenerator : IIncrementalGenerator, IGenerator
         var classWithAllArgsConstructor = AllArgsConstructorTemplate.Template
             .Replace("*namespace*", @namespace)
             .Replace("*class-name*", className)
-            .Replace("*params*", paramsConstructor.args)
-            .Replace("*appropriation-params*", paramsConstructor.appropriationArgs);
+            .Replace("*params*", paramsConstructor.parameters)
+            .Replace("*appropriation-params*", paramsConstructor.bodyConstructor);
 
         return classWithAllArgsConstructor;
     }
 
-    private (string args, string appropriationArgs) CreateParamsConstructor(Dictionary<string,
+    private static (string parameters, string bodyConstructor) CreateParamsConstructor(Dictionary<string,
         ITypeSymbol> memberPropertiesWithType)
     {
-        var @params = "";
-        var appropriationParams = "";
+        var parameters = "";
+        var bodyConstructor = "";
 
-        foreach (var memberProperty in memberPropertiesWithType)
+        const string paramsTemplate = @"*type* *arg-name*";
+        const string bodyConstructorTemplate = @"this.*member* = *ctor-param*;";
+
+        foreach (var (memberName, value) in memberPropertiesWithType)
         {
-            @params += $"{memberProperty.Value} " +
-                       $"{memberProperty.Key.ToLower().Replace("_", string.Empty)}, ";
-            appropriationParams += $"this.{memberProperty.Key} = " +
-                                   $"{memberProperty.Key.ToLower().Replace("_", string.Empty)};\n";
+            var memberType = value.Name;
+            var ctorParam = memberName.ToLower().Replace("_", string.Empty);
+
+            parameters += paramsTemplate
+                .Replace("*type*", memberType)
+                .Replace("*arg-name*", ctorParam) + ", ";
+
+            bodyConstructor += bodyConstructorTemplate
+                .Replace("*member*", memberName)
+                .Replace("*ctor-param*", ctorParam) + "\n";
         }
 
-        @params = @params[..^2];
+        // remove the last comma and space
+        parameters = parameters[..^2];
 
-        return (@params, appropriationParams);
+        return (parameters, bodyConstructor);
     }
 }

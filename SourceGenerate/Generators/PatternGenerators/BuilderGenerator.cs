@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using SourceGenerate.Domain.Attributes;
 using SourceGenerate.Templates.Patterns;
@@ -27,61 +28,69 @@ public class BuilderGenerator : IIncrementalGenerator, IGenerator
 
         foreach (var type in symbols)
         {
+            if (type == null) return;
+
             var builderClass = ((IGenerator)this).CreatePartialClass(type);
 
-            if (builderClass != null)
-            {
-                context.AddSource($"{type?.ContainingNamespace}{type?.Name}.g.cs", builderClass);
-            }
+            context.AddSource($"{type.ContainingNamespace}{type.Name}.g.cs", builderClass);
         }
     }
 
-    string? IGenerator.CreatePartialClass(ITypeSymbol? type)
+    string IGenerator.CreatePartialClass(ITypeSymbol @class)
     {
-        if (type == null)
-            return null;
+        var @namespace = @class.ContainingNamespace.ToString();
+        var className = @class.Name;
+        var builderClassName = $"{@class.Name}Builder";
 
-        var @namespace = type.ContainingNamespace.ToString();
-        var @class = type.Name;
-        var builderClassName = $"{type.Name}Builder";
-        var methods = "";
-        
         var propertiesMember = MemberHandler
-            .GetMemberStringPropertiesWithType(type, Accessibility.Public);
+            .GetMemberStringPropertiesWithType(@class, Accessibility.Public);
 
-        foreach (var property in propertiesMember)
-        {
-            var methodName = property.Key;
-            methodName = methodName.Remove(1, methodName.Length - 1).ToUpper() +
-                         property.Key.Remove(0, 1);
-
-            var method =
-                $@"
-                    public *builder-class-name* *method-name*(*parameter*)
-                    {{
-                        *lower-class-name*.*property* = *lower-property*;
-                        return this;
-                    }}
-                ";
-
-            method = method
-                .Replace("*builder-class-name*", builderClassName)
-                .Replace("*method-name*", $"Set{methodName}")
-                .Replace("*parameter*", $"{property.Value} {property.Key.ToLower()}")
-                .Replace("*lower-class-name*", @class.ToLower())
-                .Replace("*property*", property.Key)
-                .Replace("*lower-property*", property.Key.ToLower());
-
-            methods += method;
-        }
+        var methods = CreateMethods(propertiesMember, @class);
 
         var classBuilder = BuilderTemplate.Template
             .Replace("*namespace*", @namespace)
-            .Replace("*class-name*", @class)
+            .Replace("*class-name*", className)
             .Replace("*builder-class-name*", builderClassName)
-            .Replace("*lower-class-name*", @class.ToLower())
+            .Replace("*lower-class-name*", className.ToLower())
             .Replace("*methods*", methods);
-        
+
         return classBuilder;
+    }
+
+    private static string CreateMethods(Dictionary<string, ITypeSymbol> propertiesMember, ITypeSymbol @class)
+    {
+        var methods = "";
+
+        const string methodTemplate = @"
+                    public *builder-class-name* *method-name*(*parameter*)
+                    {
+                        *lower-class-name*.*member* = *parameter-member*;
+                        return this;
+                    }
+                ";
+
+        var builderClassName = $"{@class.Name}Builder";
+
+        foreach (var member in propertiesMember)
+        {
+            var methodName = new StringBuilder(member.Key)
+            {
+                [0] = Convert.ToChar(member.Key[0].ToString().ToUpper())
+            };
+
+            var parameter = $"{member.Value} {member.Key.ToLower()}";
+            var lowerClassMame = @class.Name.ToLower();
+            var parameterMember = member.Key.ToLower();
+
+            methods += methodTemplate
+                .Replace("*builder-class-name*", builderClassName)
+                .Replace("*method-name*", $"Set{methodName}")
+                .Replace("*parameter*", parameter)
+                .Replace("*lower-class-name*", lowerClassMame)
+                .Replace("*member*", member.Key)
+                .Replace("*parameter-member*", parameterMember);
+        }
+
+        return methods;
     }
 }

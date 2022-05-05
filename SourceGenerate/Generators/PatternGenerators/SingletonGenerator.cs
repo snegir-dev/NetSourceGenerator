@@ -28,19 +28,16 @@ public class SingletonGenerator : IIncrementalGenerator, IGenerator
 
         foreach (var symbol in symbols)
         {
+            if (symbol == null) return;
+
             var partialClass = ((IGenerator)this).CreatePartialClass(symbol);
 
-            if (partialClass != null)
-            {
-                context.AddSource($"{symbol?.ContainingNamespace}{symbol?.Name}.g.cs", partialClass);
-            }
+            context.AddSource($"{symbol.ContainingNamespace}{symbol.Name}.g.cs", partialClass);
         }
     }
 
-    string? IGenerator.CreatePartialClass(ITypeSymbol? symbol)
+    string IGenerator.CreatePartialClass(ITypeSymbol symbol)
     {
-        if (symbol == null) return null;
-
         var @namespace = symbol.ContainingNamespace.ToString()!;
         var className = symbol.Name;
 
