@@ -27,25 +27,21 @@ public class BuilderGenerator : IIncrementalGenerator, IGenerator
 
         foreach (var type in symbols)
         {
+            if (type == null) return;
+
             var builderClass = ((IGenerator)this).CreatePartialClass(type);
 
-            if (builderClass != null)
-            {
-                context.AddSource($"{type?.ContainingNamespace}{type?.Name}.g.cs", builderClass);
-            }
+            context.AddSource($"{type.ContainingNamespace}{type.Name}.g.cs", builderClass);
         }
     }
 
-    string? IGenerator.CreatePartialClass(ITypeSymbol? type)
+    string IGenerator.CreatePartialClass(ITypeSymbol type)
     {
-        if (type == null)
-            return null;
-
         var @namespace = type.ContainingNamespace.ToString();
         var @class = type.Name;
         var builderClassName = $"{type.Name}Builder";
         var methods = "";
-        
+
         var propertiesMember = MemberHandler
             .GetMemberStringPropertiesWithType(type, Accessibility.Public);
 
@@ -81,7 +77,7 @@ public class BuilderGenerator : IIncrementalGenerator, IGenerator
             .Replace("*builder-class-name*", builderClassName)
             .Replace("*lower-class-name*", @class.ToLower())
             .Replace("*methods*", methods);
-        
+
         return classBuilder;
     }
 }
