@@ -42,8 +42,10 @@ public class BuilderGenerator : IIncrementalGenerator, IGenerator
         var className = @class.Name;
         var builderClassName = $"{@class.Name}Builder";
 
-        var propertiesMember = MemberHandler
-            .GetMemberStringPropertiesWithType(@class, Accessibility.Public);
+        // var propertiesMember = MemberHandler
+        //     .GetMemberStringPropertiesWithType(@class, Accessibility.Public);
+
+        var propertiesMember = new Dictionary<string, ITypeSymbol>();
 
         var methods = CreateMethods(propertiesMember, @class);
 
