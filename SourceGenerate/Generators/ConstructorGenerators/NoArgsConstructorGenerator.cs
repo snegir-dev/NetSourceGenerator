@@ -6,21 +6,11 @@ using SourceGenerate.Templates.Constructors;
 namespace SourceGenerate.Generators.ConstructorGenerators;
 
 [Generator]
-public class NoArgsConstructorGenerator : IIncrementalGenerator, IGenerator
+internal class NoArgsConstructorGenerator : BaseConstructorGenerator
 {
-    private readonly GeneratorHandler _generatorHandler = new(typeof(NoArgsConstructorAttribute));
+    protected override Type Type { get; } = typeof(NoArgsConstructorAttribute);
 
-    public void Initialize(IncrementalGeneratorInitializationContext context)
-    {
-        var types = context.SyntaxProvider
-            .CreateSyntaxProvider(_generatorHandler.IsExistAttribute, _generatorHandler.GetTypeSymbolOrNull)
-            .Where(t => t != null)
-            .Collect();
-
-        context.RegisterSourceOutput(types, ((IGenerator)this).GenerateCode);
-    }
-
-    void IGenerator.GenerateCode(SourceProductionContext context, ImmutableArray<ITypeSymbol?> symbols)
+    protected override void GenerateCode(SourceProductionContext context, ImmutableArray<ITypeSymbol?> symbols)
     {
         if (symbols.IsDefaultOrEmpty) return;
 
@@ -28,14 +18,14 @@ public class NoArgsConstructorGenerator : IIncrementalGenerator, IGenerator
         {
             if (type == null) return;
 
-            var classWithNoArgsConstructor = ((IGenerator)this).CreatePartialClass(type);
+            var partialClass = GeneratePartialClass(type);
 
             context.AddSource($"{type.ContainingNamespace}{type.Name}.g.cs",
-                classWithNoArgsConstructor);
+                partialClass);
         }
     }
 
-    string IGenerator.CreatePartialClass(ITypeSymbol type)
+    protected override string GeneratePartialClass(ITypeSymbol type)
     {
         var @namespace = type.ContainingNamespace.ToString();
         var className = type.Name;
