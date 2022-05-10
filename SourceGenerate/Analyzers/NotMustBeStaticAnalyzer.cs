@@ -28,7 +28,7 @@ public class NotMustBeStaticAnalyzer : DiagnosticAnalyzer, IAnalyzer
     void IAnalyzer.Check(SyntaxNodeAnalysisContext context)
     {
         var nameTypeSymbol = context.Compilation
-            .GetTypeByMetadataName(typeof(NotStaticAttribute).FullName!);
+            .GetTypeByMetadataName(typeof(NoStaticAttribute).FullName!);
 
         if (nameTypeSymbol == null)
             return;
@@ -36,7 +36,7 @@ public class NotMustBeStaticAnalyzer : DiagnosticAnalyzer, IAnalyzer
         var isStatic = context.ContainingSymbol?.GetAttributes()
             .Select(a => a.AttributeClass?.GetAttributes())
             .Select(i => i!.Value
-                .Any(a => a.AttributeClass?.Name == nameof(NotStaticAttribute)))
+                .Any(a => a.AttributeClass?.Name == nameof(NoStaticAttribute)))
             .Any(b => b);
         
 
