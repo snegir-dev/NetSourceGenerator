@@ -2,52 +2,26 @@
 using System.Text;
 using Microsoft.CodeAnalysis;
 using SourceGenerate.Domain.Attributes;
+using SourceGenerate.Domain.Enum;
 using SourceGenerate.Templates.Patterns;
 
 namespace SourceGenerate.Generators.PatternGenerators;
 
 [Generator]
-public class BuilderGenerator : IIncrementalGenerator, IGenerator
+internal class BuilderGenerator : AdditionalMethodPatternGenerator, IIncrementalGenerator
 {
-    private readonly GeneratorHandler _generatorHandler = new(typeof(BuilderAttribute));
+    protected override Type Type { get; } = typeof(BuilderAttribute);
 
-    public void Initialize(IncrementalGeneratorInitializationContext context)
-    {
-        var types = context.SyntaxProvider
-            .CreateSyntaxProvider(_generatorHandler.IsExistAttribute, _generatorHandler.GetTypeSymbolOrNull)
-            .Where(p => p != null)
-            .Collect();
-
-        context.RegisterSourceOutput(types, ((IGenerator)this).GenerateCode);
-    }
-
-    void IGenerator.GenerateCode(SourceProductionContext context, ImmutableArray<ITypeSymbol?> symbols)
-    {
-        if (symbols.IsDefaultOrEmpty)
-            return;
-
-        foreach (var type in symbols)
-        {
-            if (type == null) return;
-
-            var builderClass = ((IGenerator)this).CreatePartialClass(type);
-
-            context.AddSource($"{type.ContainingNamespace}{type.Name}.g.cs", builderClass);
-        }
-    }
-
-    string IGenerator.CreatePartialClass(ITypeSymbol @class)
+    protected override string GeneratePartialClass(ITypeSymbol @class)
     {
         var @namespace = @class.ContainingNamespace.ToString();
         var className = @class.Name;
         var builderClassName = $"{@class.Name}Builder";
 
-        // var propertiesMember = MemberHandler
-        //     .GetMemberStringPropertiesWithType(@class, Accessibility.Public);
+        var propertiesMember = MemberHandler
+            .GetMemberNameWithType(@class, MemberType.All, AccessType.All);
 
-        var propertiesMember = new Dictionary<string, ITypeSymbol>();
-
-        var methods = CreateMethods(propertiesMember, @class);
+        var methods = GenerateMethods(propertiesMember, @class);
 
         var classBuilder = BuilderTemplate.Template
             .Replace("*namespace*", @namespace)
@@ -59,7 +33,7 @@ public class BuilderGenerator : IIncrementalGenerator, IGenerator
         return classBuilder;
     }
 
-    private static string CreateMethods(Dictionary<string, ITypeSymbol> propertiesMember, ITypeSymbol @class)
+    protected override string GenerateMethods(Dictionary<string, ITypeSymbol> propertiesMember, ITypeSymbol @class)
     {
         var methods = "";
 

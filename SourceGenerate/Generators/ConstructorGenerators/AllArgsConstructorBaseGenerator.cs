@@ -8,27 +8,9 @@ using SourceGenerate.Templates.Constructors;
 namespace SourceGenerate.Generators.ConstructorGenerators;
 
 [Generator]
-internal class AllArgsConstructorGenerator : RequiredArgsConstructor
+internal class AllArgsConstructorBaseGenerator : RequiredArgsConstructorBase
 {
     protected override Type Type { get; } = typeof(AllArgsConstructorAttribute);
-
-    protected override void GenerateCode(SourceProductionContext context, ImmutableArray<ITypeSymbol?> symbols)
-    {
-        if (symbols.IsDefaultOrEmpty) return;
-
-        foreach (var type in symbols)
-        {
-            if (type == null) return;
-
-            var partialClass = GeneratePartialClass(type);
-
-            if (partialClass != null)
-            {
-                context.AddSource($"{type.ContainingNamespace}{type.Name}.g.cs",
-                    partialClass);
-            }
-        }
-    }
 
     protected override string? GeneratePartialClass(ITypeSymbol type)
     {

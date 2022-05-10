@@ -2,7 +2,7 @@
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 [Partial]
-[NotStatic]
+[NoStatic]
 public class SingletonAttribute : Attribute
 {
     
