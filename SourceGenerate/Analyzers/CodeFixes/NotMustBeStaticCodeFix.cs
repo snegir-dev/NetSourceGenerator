@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace SourceGenerate.Analyzers.CodeFixes;
 
 [ExportCodeFixProvider(LanguageNames.CSharp)]
-public class NotMustBeStaticCodeFix : CodeFixProvider
+internal class NotMustBeStaticCodeFix : BaseCodeFix
 {
     private static readonly string DiagnosticId = DiagnosticDescriptions.TypeNotMustBePartial.Id;
 
