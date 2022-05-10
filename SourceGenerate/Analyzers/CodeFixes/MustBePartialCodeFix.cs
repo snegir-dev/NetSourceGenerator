@@ -8,9 +8,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace SourceGenerate.Analyzers.CodeFixes;
 
 [ExportCodeFixProvider(LanguageNames.CSharp)]
-public class MustBePartialCodeFix : CodeFixProvider
+internal class MustBePartialCodeFix : BaseCodeFix
 {
-    private static readonly string DiagnosticId = DiagnosticDescriptions.TypeMustBePartial.Id;
+    private static string DiagnosticId { get; } = DiagnosticDescriptions.TypeMustBePartial.Id;
 
     public override ImmutableArray<string> FixableDiagnosticIds { get; } =
         ImmutableArray.Create(DiagnosticId);
