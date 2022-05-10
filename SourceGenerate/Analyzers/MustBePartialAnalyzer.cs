@@ -8,23 +8,12 @@ using SourceGenerate.Domain.Attributes;
 namespace SourceGenerate.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class MustBePartialAnalyzer : DiagnosticAnalyzer, IAnalyzer
+internal class MustBePartialAnalyzer : BaseAnalyzer
 {
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
         ImmutableArray.Create(DiagnosticDescriptions.TypeMustBePartial);
 
-    public override void Initialize(AnalysisContext context)
-    {
-        context.EnableConcurrentExecution();
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | 
-                                               GeneratedCodeAnalysisFlags.ReportDiagnostics);
-
-        context.RegisterSyntaxNodeAction(((IAnalyzer)this).Check,
-            SyntaxKind.ClassDeclaration,
-            SyntaxKind.StructDeclaration);
-    }
-
-    void IAnalyzer.Check(SyntaxNodeAnalysisContext context)
+    protected override void Check(SyntaxNodeAnalysisContext context)
     {
         var namedTypeSymbol = context.Compilation
             .GetTypeByMetadataName(typeof(PartialAttribute).FullName!);
