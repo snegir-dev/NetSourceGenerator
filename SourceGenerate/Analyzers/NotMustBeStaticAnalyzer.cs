@@ -9,23 +9,12 @@ using SourceGenerate.Generators;
 namespace SourceGenerate.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class NotMustBeStaticAnalyzer : DiagnosticAnalyzer, IAnalyzer
+internal class NotMustBeStaticAnalyzer : BaseAnalyzer
 {
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
         ImmutableArray.Create(DiagnosticDescriptions.TypeNotMustBePartial);
 
-    public override void Initialize(AnalysisContext context)
-    {
-        context.EnableConcurrentExecution();
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | 
-                                               GeneratedCodeAnalysisFlags.ReportDiagnostics);
-        
-        context.RegisterSyntaxNodeAction(((IAnalyzer)this).Check, 
-            SyntaxKind.ClassDeclaration, 
-            SyntaxKind.StructDeclaration);
-    }
-
-    void IAnalyzer.Check(SyntaxNodeAnalysisContext context)
+    protected override void Check(SyntaxNodeAnalysisContext context)
     {
         var nameTypeSymbol = context.Compilation
             .GetTypeByMetadataName(typeof(NoStaticAttribute).FullName!);
