@@ -1,16 +1,19 @@
 ﻿using System.Collections.Immutable;
+using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using SourceGenerate.Domain.Attributes;
 using SourceGenerate.Domain.Enum;
 using SourceGenerate.Extensions;
+using SourceGenerate.Templates;
 using SourceGenerate.Templates.Constructors;
 
 namespace SourceGenerate.Generators.ConstructorGenerators;
 
 [Generator]
-internal class AllArgsConstructorBaseGenerator : RequiredArgsConstructorBase
+internal class AllArgsConstructorBaseGenerator : RequiredArgsConstructorBase, IIncrementalGenerator
 {
     protected override Type Type { get; } = typeof(AllArgsConstructorAttribute);
+    protected override ITemplate Template { get; } = new AllArgsConstructorTemplate();
 
     protected override string? GeneratePartialClass(ITypeSymbol type)
     {
@@ -24,10 +27,12 @@ internal class AllArgsConstructorBaseGenerator : RequiredArgsConstructorBase
             .GetMemberNameWithType(type, memberType, accessType);
 
         if (memberPropertiesWithType.Count <= 0) return null;
+        
+        FileDebug.Debug(memberType + " - " + accessType);
 
         var constructor = CreateArgsConstructor(memberPropertiesWithType);
 
-        var classWithAllArgsConstructor = AllArgsConstructorTemplate.Template
+        var classWithAllArgsConstructor = Template.GetTemplate()
             .Replace("*namespace*", @namespace)
             .Replace("*class-name*", className)
             .Replace("*params*", constructor.parameters)

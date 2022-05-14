@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using SourceGenerate.Domain.Attributes;
 using SourceGenerate.Domain.Enum;
+using SourceGenerate.Templates;
 using SourceGenerate.Templates.Patterns;
 
 namespace SourceGenerate.Generators.PatternGenerators;
@@ -11,6 +12,7 @@ namespace SourceGenerate.Generators.PatternGenerators;
 internal class BuilderGenerator : AdditionalMethodPatternGenerator, IIncrementalGenerator
 {
     protected override Type Type { get; } = typeof(BuilderAttribute);
+    protected override ITemplate Template { get; } = new BuilderTemplate();
 
     protected override string GeneratePartialClass(ITypeSymbol @class)
     {
@@ -23,7 +25,7 @@ internal class BuilderGenerator : AdditionalMethodPatternGenerator, IIncremental
 
         var methods = GenerateMethods(propertiesMember, @class);
 
-        var classBuilder = BuilderTemplate.Template
+        var classBuilder = Template.GetTemplate()
             .Replace("*namespace*", @namespace)
             .Replace("*class-name*", className)
             .Replace("*builder-class-name*", builderClassName)

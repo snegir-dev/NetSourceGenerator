@@ -1,12 +1,15 @@
 ﻿using System.Collections.Immutable;
+using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SourceGenerate.Templates;
 
 namespace SourceGenerate.Generators;
 
 internal abstract class BaseGenerator
 {
     protected abstract Type Type { get; }
+    protected abstract ITemplate Template { get; }
     
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -18,6 +21,8 @@ internal abstract class BaseGenerator
         context.RegisterSourceOutput(types, GenerateCode);
     }   
 
+    protected abstract string GeneratePartialClass(ITypeSymbol type);
+    
     private void GenerateCode(SourceProductionContext context, ImmutableArray<ITypeSymbol?> symbols)
     {
         if (symbols.IsDefaultOrEmpty)
@@ -33,8 +38,6 @@ internal abstract class BaseGenerator
         }
     }
     
-    protected abstract string GeneratePartialClass(ITypeSymbol type);
-
     private bool IsExistAttribute(SyntaxNode node, CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)

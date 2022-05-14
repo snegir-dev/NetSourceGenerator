@@ -1,10 +1,8 @@
 ﻿namespace SourceGenerate.Templates.Constructors;
 
-public static class NoArgsConstructorTemplate
+public class NoArgsConstructorTemplate : ITemplate
 {
-    public static string Template => GetTemplate();
-
-    private static string GetTemplate()
+    public string GetTemplate()
     {
         return
             @"

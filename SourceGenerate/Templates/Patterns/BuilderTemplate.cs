@@ -1,10 +1,8 @@
 ﻿namespace SourceGenerate.Templates.Patterns;
 
-public static class BuilderTemplate
+public class BuilderTemplate : ITemplate
 {
-    public static string Template => GetTemplate();
-     
-    private static string GetTemplate()
+    public string GetTemplate()
     {
         return
             $@"

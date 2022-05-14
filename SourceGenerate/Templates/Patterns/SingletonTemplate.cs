@@ -1,10 +1,8 @@
 ﻿namespace SourceGenerate.Templates.Patterns;
 
-public static class SingletonTemplate
+public class SingletonTemplate : ITemplate
 {
-    public static string Template => GetTemplate();
-
-    private static string GetTemplate()
+    public string GetTemplate()
     {
         return
             @"
