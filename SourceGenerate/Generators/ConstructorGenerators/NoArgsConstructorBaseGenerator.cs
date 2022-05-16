@@ -12,10 +12,10 @@ internal class NoArgsConstructorBaseGenerator : BaseGenerator, IIncrementalGener
     protected override Type Type { get; } = typeof(NoArgsConstructorAttribute);
     protected override ITemplate Template { get; } = new NoArgsConstructorTemplate();
 
-    protected override string GeneratePartialMember(ITypeSymbol type)
+    protected override string GeneratePartialMember(ITypeSymbol symbol)
     {
-        var @namespace = type.ContainingNamespace.ToString();
-        var className = type.Name;
+        var @namespace = symbol.ContainingNamespace.ToString();
+        var className = symbol.Name;
 
         var classWithNoArgsConstructor = Template.GetTemplate()
             .Replace("*namespace*", @namespace)

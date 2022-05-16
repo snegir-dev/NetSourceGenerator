@@ -21,7 +21,7 @@ internal abstract class BaseGenerator
         context.RegisterSourceOutput(types, GenerateCode);
     }
 
-    protected abstract string GeneratePartialMember(ITypeSymbol type);
+    protected abstract string GeneratePartialMember(ITypeSymbol symbol);
 
     private void GenerateCode(SourceProductionContext context, ImmutableArray<ITypeSymbol?> symbols)
     {

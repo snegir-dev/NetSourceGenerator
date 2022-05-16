@@ -15,16 +15,16 @@ internal class AllArgsConstructorBaseGenerator : RequiredArgsConstructorBase, II
     protected override Type Type { get; } = typeof(AllArgsConstructorAttribute);
     protected override ITemplate Template { get; } = new AllArgsConstructorTemplate();
 
-    protected override string? GeneratePartialMember(ITypeSymbol type)
+    protected override string? GeneratePartialMember(ITypeSymbol symbol)
     {
-        var @namespace = type.ContainingNamespace.ToString();
-        var className = type.Name;
+        var @namespace = symbol.ContainingNamespace.ToString();
+        var className = symbol.Name;
 
-        var memberType = type.GetAttributeArgument<MemberType>() ?? MemberType.All;
-        var accessType = type.GetAttributeArgument<AccessType>() ?? AccessType.All;
+        var memberType = symbol.GetAttributeArgument<MemberType>() ?? MemberType.All;
+        var accessType = symbol.GetAttributeArgument<AccessType>() ?? AccessType.All;
 
         var memberPropertiesWithType = MemberHandler
-            .GetMemberNameWithType(type, memberType, accessType);
+            .GetMemberNameWithType(symbol, memberType, accessType);
 
         if (memberPropertiesWithType.Count <= 0) return null;
         
