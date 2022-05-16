@@ -14,7 +14,7 @@ internal class BuilderGenerator : AdditionalMethodPatternGenerator, IIncremental
     protected override Type Type { get; } = typeof(BuilderAttribute);
     protected override ITemplate Template { get; } = new BuilderTemplate();
 
-    protected override string GeneratePartialClass(ITypeSymbol @class)
+    protected override string GeneratePartialMember(ITypeSymbol @class)
     {
         var @namespace = @class.ContainingNamespace.ToString();
         var className = @class.Name;

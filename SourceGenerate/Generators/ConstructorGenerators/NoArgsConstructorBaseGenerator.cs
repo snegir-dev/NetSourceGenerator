@@ -12,7 +12,7 @@ internal class NoArgsConstructorBaseGenerator : BaseGenerator, IIncrementalGener
     protected override Type Type { get; } = typeof(NoArgsConstructorAttribute);
     protected override ITemplate Template { get; } = new NoArgsConstructorTemplate();
 
-    protected override string GeneratePartialClass(ITypeSymbol type)
+    protected override string GeneratePartialMember(ITypeSymbol type)
     {
         var @namespace = type.ContainingNamespace.ToString();
         var className = type.Name;

@@ -15,7 +15,7 @@ internal class AllArgsConstructorBaseGenerator : RequiredArgsConstructorBase, II
     protected override Type Type { get; } = typeof(AllArgsConstructorAttribute);
     protected override ITemplate Template { get; } = new AllArgsConstructorTemplate();
 
-    protected override string? GeneratePartialClass(ITypeSymbol type)
+    protected override string? GeneratePartialMember(ITypeSymbol type)
     {
         var @namespace = type.ContainingNamespace.ToString();
         var className = type.Name;
