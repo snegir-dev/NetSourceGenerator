@@ -18,7 +18,18 @@ internal class AllArgsConstructorBaseGenerator : RequiredArgsConstructorBase, II
     protected override string? GeneratePartialMember(ITypeSymbol symbol)
     {
         var @namespace = symbol.ContainingNamespace.ToString();
+        var dataStructure = "";
         var className = symbol.Name;
+        
+        switch (symbol.TypeKind)
+        {
+            case TypeKind.Class:
+                dataStructure = symbol.TypeKind.ToString().ToLower();
+                break;
+            case TypeKind.Structure:
+                dataStructure = "struct";
+                break;
+        }
 
         var memberType = symbol.GetAttributeArgument<MemberType>() ?? MemberType.All;
         var accessType = symbol.GetAttributeArgument<AccessType>() ?? AccessType.All;
@@ -34,7 +45,8 @@ internal class AllArgsConstructorBaseGenerator : RequiredArgsConstructorBase, II
 
         var classWithAllArgsConstructor = Template.GetTemplate()
             .Replace("*namespace*", @namespace)
-            .Replace("*class-name*", className)
+            .Replace("*type-object*", dataStructure)
+            .Replace("*type-object-name*", className)
             .Replace("*params*", constructor.parameters)
             .Replace("*appropriation-params*", constructor.bodyConstructor);
 

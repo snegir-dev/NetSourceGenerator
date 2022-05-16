@@ -8,9 +8,9 @@ public class AllArgsConstructorTemplate : ITemplate
             @"
                 namespace *namespace*
                 {
-                    partial class *class-name*
+                    partial *type-object* *type-object-name*
                     {
-                        public *class-name*(*params*)
+                        public *type-object-name*(*params*)
                         {
                             *appropriation-params*
                         }
