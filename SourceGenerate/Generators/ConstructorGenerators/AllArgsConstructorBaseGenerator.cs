@@ -18,19 +18,9 @@ internal class AllArgsConstructorBaseGenerator : RequiredArgsConstructorBase, II
     protected override string? GeneratePartialMember(ITypeSymbol symbol)
     {
         var @namespace = symbol.ContainingNamespace.ToString();
-        var dataStructure = "";
+        var dataStructure = GetDataStructureType(symbol);
         var className = symbol.Name;
         
-        switch (symbol.TypeKind)
-        {
-            case TypeKind.Class:
-                dataStructure = symbol.TypeKind.ToString().ToLower();
-                break;
-            case TypeKind.Structure:
-                dataStructure = "struct";
-                break;
-        }
-
         var memberType = symbol.GetAttributeArgument<MemberType>() ?? MemberType.All;
         var accessType = symbol.GetAttributeArgument<AccessType>() ?? AccessType.All;
 
@@ -38,8 +28,6 @@ internal class AllArgsConstructorBaseGenerator : RequiredArgsConstructorBase, II
             .GetMemberNameWithType(symbol, memberType, accessType);
 
         if (memberPropertiesWithType.Count <= 0) return null;
-        
-        FileDebug.Debug(memberType + " - " + accessType);
 
         var constructor = CreateArgsConstructor(memberPropertiesWithType);
 
@@ -80,5 +68,22 @@ internal class AllArgsConstructorBaseGenerator : RequiredArgsConstructorBase, II
         parameters = parameters[..^2];
 
         return (parameters, bodyConstructor);
+    }
+
+    protected override string GetDataStructureType(ITypeSymbol symbol)
+    {
+        var dataStructure = "";
+        
+        switch (symbol.TypeKind)
+        {
+            case TypeKind.Class:
+                dataStructure = symbol.TypeKind.ToString().ToLower();
+                break;
+            case TypeKind.Structure:
+                dataStructure = "struct";
+                break;
+        }
+
+        return dataStructure;
     }
 }
