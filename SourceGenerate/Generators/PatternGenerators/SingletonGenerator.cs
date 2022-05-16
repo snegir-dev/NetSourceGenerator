@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Formatting;
 using SourceGenerate.Domain.Attributes;
@@ -13,14 +14,16 @@ internal class SingletonGenerator : BaseGenerator, IIncrementalGenerator
     protected override Type Type { get; } = typeof(SingletonAttribute);
     protected override ITemplate Template { get; } = new SingletonTemplate();
 
-    protected override string GeneratePartialClass(ITypeSymbol symbol)
+    protected override string GeneratePartialMember(ITypeSymbol symbol)
     {
         var @namespace = symbol.ContainingNamespace.ToString()!;
-        var className = symbol.Name;
+        var dataStructure = symbol.TypeKind.ToString().ToLower();
+        var dataStructureName = symbol.Name;
 
         var partialClass = Template.GetTemplate()
             .Replace("*namespace*", @namespace)
-            .Replace("*class-name*", className);
+            .Replace("*data-structure*", dataStructure)
+            .Replace("*data-structure-name*", dataStructureName);
 
         return partialClass;
     }

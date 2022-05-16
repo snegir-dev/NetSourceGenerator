@@ -1,6 +1,6 @@
 ﻿namespace SourceGenerate.Domain.Attributes;
 
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+[AttributeUsage(AttributeTargets.Class)]
 [Partial]
 public class NoArgsConstructorAttribute : Attribute
 {

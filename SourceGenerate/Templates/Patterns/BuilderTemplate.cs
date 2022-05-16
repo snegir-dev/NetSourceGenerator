@@ -6,32 +6,33 @@ public class BuilderTemplate : ITemplate
     {
         return
             $@"
-                namespace *namespace*
-                {{
-                    partial class *class-name*
-                    {{
-                        public static *builder-class-name* Builder()
-                        {{
-                            return new *builder-class-name*();
-                        }}
 
-                        public class *builder-class-name*
-                        {{
-                            private *class-name* *lower-class-name*;
-                            public *builder-class-name*()
-                            {{
-                                *lower-class-name* = new *class-name*();
-                            }}
+namespace *namespace*
+{{
+    partial *type-object* *type-object-name*
+    {{
+        public static *builder-type-object-name* Builder()
+        {{
+            return new *builder-type-object-name*();
+        }}
 
-                            *methods*
+        public *type-object* *builder-type-object-name*
+        {{
+            private *type-object-name* *lower-type-object-name*;
+            public *builder-type-object-name*()
+            {{
+                *lower-type-object-name* = new *type-object-name*();
+            }}
 
-                            public *class-name* Build()
-                            {{
-                                return *lower-class-name*;
-                            }}
-                        }}
-                    }}
-                }}
+            *methods*
+
+            public *type-object-name* Build()
+            {{
+                return *lower-type-object-name*;
+            }}
+        }}
+    }}
+}}
             ";
     }
 }

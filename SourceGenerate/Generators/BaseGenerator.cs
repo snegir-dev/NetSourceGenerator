@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
-using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SourceGenerate.Extensions;
 using SourceGenerate.Templates;
 
 namespace SourceGenerate.Generators;
@@ -10,19 +10,19 @@ internal abstract class BaseGenerator
 {
     protected abstract Type Type { get; }
     protected abstract ITemplate Template { get; }
-    
+
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var types = context.SyntaxProvider
             .CreateSyntaxProvider(IsExistAttribute, GetTypeSymbolOrNull)
             .Where(type => type != null)
             .Collect();
-        
-        context.RegisterSourceOutput(types, GenerateCode);
-    }   
 
-    protected abstract string GeneratePartialClass(ITypeSymbol type);
-    
+        context.RegisterSourceOutput(types, GenerateCode);
+    }
+
+    protected abstract string GeneratePartialMember(ITypeSymbol symbol);
+
     private void GenerateCode(SourceProductionContext context, ImmutableArray<ITypeSymbol?> symbols)
     {
         if (symbols.IsDefaultOrEmpty)
@@ -32,26 +32,25 @@ internal abstract class BaseGenerator
         {
             if (symbol == null) return;
 
-            var partialClass = GeneratePartialClass(symbol);
+            var partialClass = GeneratePartialMember(symbol);
 
             context.AddSource($"{symbol.ContainingNamespace}{symbol.Name}.g.cs", partialClass);
         }
     }
-    
+
     private bool IsExistAttribute(SyntaxNode node, CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)
             return false;
 
-        if (node is not ClassDeclarationSyntax classDeclaration)
-            return false;
-
-        var isFits = classDeclaration.AttributeLists
-            .SelectMany(a => a.Attributes)
-            .Any(a => a.Name is IdentifierNameSyntax nameSyntax &&
-                      Type.Name.StartsWith(nameSyntax.Identifier.Text));
-
-        return isFits;
+        return node switch
+        {
+            ClassDeclarationSyntax classDeclaration =>
+                classDeclaration.AttributeLists.CheckAttributeFit(Type),
+            StructDeclarationSyntax structDeclaration =>
+                structDeclaration.AttributeLists.CheckAttributeFit(Type),
+            _ => false
+        };
     }
 
     private ITypeSymbol? GetTypeSymbolOrNull(GeneratorSyntaxContext context,
@@ -60,8 +59,14 @@ internal abstract class BaseGenerator
         if (cancellationToken.IsCancellationRequested)
             return null;
 
-        var classDeclaration = (ClassDeclarationSyntax)context.Node;
-        var type = (ITypeSymbol?)context.SemanticModel.GetDeclaredSymbol(classDeclaration, cancellationToken);
+        var type = (ITypeSymbol?)(context.Node switch
+        {
+            ClassDeclarationSyntax classDeclaration =>
+                context.SemanticModel.GetDeclaredSymbol(classDeclaration, cancellationToken),
+            StructDeclarationSyntax structDeclaration =>
+                context.SemanticModel.GetDeclaredSymbol(structDeclaration, cancellationToken),
+            _ => null
+        });
 
         if (type == null)
             return null;

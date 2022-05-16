@@ -15,16 +15,27 @@ internal class AllArgsConstructorBaseGenerator : RequiredArgsConstructorBase, II
     protected override Type Type { get; } = typeof(AllArgsConstructorAttribute);
     protected override ITemplate Template { get; } = new AllArgsConstructorTemplate();
 
-    protected override string? GeneratePartialClass(ITypeSymbol type)
+    protected override string? GeneratePartialMember(ITypeSymbol symbol)
     {
-        var @namespace = type.ContainingNamespace.ToString();
-        var className = type.Name;
+        var @namespace = symbol.ContainingNamespace.ToString();
+        var dataStructure = "";
+        var className = symbol.Name;
+        
+        switch (symbol.TypeKind)
+        {
+            case TypeKind.Class:
+                dataStructure = symbol.TypeKind.ToString().ToLower();
+                break;
+            case TypeKind.Structure:
+                dataStructure = "struct";
+                break;
+        }
 
-        var memberType = type.GetAttributeArgument<MemberType>() ?? MemberType.All;
-        var accessType = type.GetAttributeArgument<AccessType>() ?? AccessType.All;
+        var memberType = symbol.GetAttributeArgument<MemberType>() ?? MemberType.All;
+        var accessType = symbol.GetAttributeArgument<AccessType>() ?? AccessType.All;
 
         var memberPropertiesWithType = MemberHandler
-            .GetMemberNameWithType(type, memberType, accessType);
+            .GetMemberNameWithType(symbol, memberType, accessType);
 
         if (memberPropertiesWithType.Count <= 0) return null;
         
@@ -34,7 +45,8 @@ internal class AllArgsConstructorBaseGenerator : RequiredArgsConstructorBase, II
 
         var classWithAllArgsConstructor = Template.GetTemplate()
             .Replace("*namespace*", @namespace)
-            .Replace("*class-name*", className)
+            .Replace("*type-object*", dataStructure)
+            .Replace("*type-object-name*", className)
             .Replace("*params*", constructor.parameters)
             .Replace("*appropriation-params*", constructor.bodyConstructor);
 
