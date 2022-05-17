@@ -6,27 +6,26 @@ public class SingletonTemplate : ITemplate
     {
         return
             @"
-                using System;
 
-                namespace *namespace*
-                {
+namespace *namespace*
+{
+    partial *data-structure* *data-structure-name*
+    {
+        private static *data-structure-name* _instance;
 
-                    partial class *class-name*
-                    {
-                        private static *class-name* _instance;
+        private *data-structure-name*()
+        {
+        }
 
-                        private *class-name*()
-                        {
-                        }
+        public static *data-structure-name* GetInstance()
+        {
+            if (_instance == null)
+                _instance = new *data-structure-name*();
+            return _instance;
+        }
+    }
+}
 
-                        public static *class-name* GetInstance()
-                        {
-                            if (_instance == null)
-                                _instance = new *class-name*();
-                            return _instance;
-                        }
-                    }
-                }
             ";
     }
 }
