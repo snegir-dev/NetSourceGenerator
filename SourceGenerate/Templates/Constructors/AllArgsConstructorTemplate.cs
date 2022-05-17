@@ -6,6 +6,8 @@ public class AllArgsConstructorTemplate : ITemplate
     {
         return
             @"
+                using System;
+
                 namespace *namespace*
                 {
                     partial *type-object* *type-object-name*

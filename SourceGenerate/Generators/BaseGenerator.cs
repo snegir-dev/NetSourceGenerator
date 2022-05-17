@@ -21,7 +21,7 @@ internal abstract class BaseGenerator
         context.RegisterSourceOutput(types, GenerateCode);
     }
 
-    protected abstract string GeneratePartialMember(ITypeSymbol symbol);
+    protected abstract string? GeneratePartialMember(ITypeSymbol symbol);
 
     private void GenerateCode(SourceProductionContext context, ImmutableArray<ITypeSymbol?> symbols)
     {
@@ -34,7 +34,10 @@ internal abstract class BaseGenerator
 
             var partialClass = GeneratePartialMember(symbol);
 
-            context.AddSource($"{symbol.ContainingNamespace}{symbol.Name}.g.cs", partialClass);
+            if (partialClass != null)
+            {
+                context.AddSource($"{symbol.ContainingNamespace}{symbol.Name}.g.cs", partialClass);
+            }
         }
     }
 
