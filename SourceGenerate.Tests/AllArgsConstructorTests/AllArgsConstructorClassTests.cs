@@ -2,14 +2,14 @@
 using SourceGenerate.Domain.Enum;
 using Xunit;
 
-namespace SourceGenerate.Tests;
+namespace SourceGenerate.Tests.AllArgsConstructorTests;
 
-public class AllArgsConstructorTests
+public class AllArgsConstructorClassTests
 {
     [Fact]
     private void AllArgsConstructorTest()
     {
-        var car = new CarAllArgsConstructor("BMW", 5);
+        var car = new CarAllArgsConstructorClass("BMW", 5);
         
         Assert.Equal("BMW", car.Brand);
         Assert.Equal(5, car.Age);
@@ -18,7 +18,7 @@ public class AllArgsConstructorTests
     [Fact]
     private void ConstructorWithOnlyPropertyTest()
     {
-        var car = new CarWithOnlyProperty("BMW");
+        var car = new CarWithOnlyPropertyClass("BMW");
         
         Assert.Equal("BMW", car.Brand);
         Assert.Equal(0, car.Age);
@@ -27,7 +27,7 @@ public class AllArgsConstructorTests
     [Fact]
     private void ConstructorWithOnlyFieldTest()
     {
-        var car = new CarWithOnlyField(5);
+        var car = new CarWithOnlyFieldClass(5);
         
         Assert.Null(car.Brand);
         Assert.Equal(5, car.Age);
@@ -36,7 +36,7 @@ public class AllArgsConstructorTests
     [Fact]
     private void ConstructorWithOnlyInternalModifierTest()
     {
-        var car = new CarWithOnlyInternalModifier("BMW");
+        var car = new CarWithOnlyInternalModifierClass("BMW");
         
         Assert.Equal("BMW", car.Brand);
         Assert.Equal(0, car.Age);
@@ -45,7 +45,7 @@ public class AllArgsConstructorTests
     [Fact]
     private void ConstructorWithOnlyPrivateModifierTest()
     {
-        var car = new CarWithOnlyPrivateModifier("BMW");
+        var car = new CarWithOnlyPrivateModifierClass("BMW");
         
         Assert.Equal("BMW", car.Brand);
         Assert.Equal(0, car.Age);
@@ -54,7 +54,7 @@ public class AllArgsConstructorTests
     [Fact]
     private void ConstructorWithOnlyProtectedModifierTest()
     {
-        var car = new CarWithOnlyProtectedModifier("BMW");
+        var car = new CarWithOnlyProtectedModifierClass("BMW");
         
         Assert.Equal("BMW", car.Brand);
         Assert.Equal(0, car.Age);
@@ -62,28 +62,28 @@ public class AllArgsConstructorTests
 }
 
 [AllArgsConstructor]
-public partial class CarAllArgsConstructor
+public partial class CarAllArgsConstructorClass
 {
     public string Brand { get; set; }
     public int Age;
 }
 
 [AllArgsConstructor(MemberType.Property)]
-public partial class CarWithOnlyProperty
+public partial class CarWithOnlyPropertyClass
 {
     public string Brand { get; set; }
     public int Age;
 }
 
 [AllArgsConstructor(MemberType.Field)]
-public partial class CarWithOnlyField
+public partial class CarWithOnlyFieldClass
 {
     public string Brand { get; set; }
     public int Age;
 }
 
 [AllArgsConstructor(AccessType.Internal)]
-public partial class CarWithOnlyInternalModifier
+public partial class CarWithOnlyInternalModifierClass
 {
     internal string Brand { get; set; }
     public int Age;
@@ -91,7 +91,7 @@ public partial class CarWithOnlyInternalModifier
 
 
 [AllArgsConstructor(AccessType.Private)]
-public partial class CarWithOnlyPrivateModifier
+partial class CarWithOnlyPrivateModifierClass
 {
     private string _brand;
     public int Age;
@@ -100,13 +100,10 @@ public partial class CarWithOnlyPrivateModifier
 }
 
 [AllArgsConstructor(AccessType.Protected)]
-public partial class CarWithOnlyProtectedModifier
+public partial class CarWithOnlyProtectedModifierClass
 {
     protected string _brand;
     public int Age;
 
     public string Brand => _brand;
 }
-
-
-

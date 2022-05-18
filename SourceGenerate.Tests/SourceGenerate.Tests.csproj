@@ -22,10 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SourceGenerate\SourceGenerate.csproj"
-                        PrivateAssets="contentfiles;build"
-                        OutputItemType="Analyzer"
-                        ReferenceOutputAssembly="true" />
+      <ProjectReference Include="..\SourceGenerate\SourceGenerate.csproj" PrivateAssets="contentfiles;build" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
     </ItemGroup>
 
 </Project>
