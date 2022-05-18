@@ -107,6 +107,3 @@ public partial class CarWithOnlyProtectedModifier
 
     public string Brand => _brand;
 }
-
-
-
