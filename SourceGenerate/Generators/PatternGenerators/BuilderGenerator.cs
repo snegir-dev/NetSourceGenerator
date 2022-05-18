@@ -63,9 +63,10 @@ internal class BuilderGenerator : AdditionalMethodPatternGenerator, IIncremental
 
         foreach (var member in propertiesMember)
         {
-            var methodName = new StringBuilder(member.Key)
+            var memberName = member.Key.Replace("_", "");
+            var methodName = new StringBuilder(memberName)
             {
-                [0] = Convert.ToChar(member.Key[0].ToString().ToUpper())
+                [0] = Convert.ToChar(memberName[0].ToString().ToUpper())
             };
 
             var parameter = $"{member.Value} {member.Key.ToLower()}";
