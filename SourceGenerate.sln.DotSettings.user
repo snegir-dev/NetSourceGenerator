@@ -1,11 +1,4 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=aec5f2e7_002D81c7_002D4df3_002D8d3e_002D1e0fd74907d4/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="ClassTest1" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::6C3B5795-93DE-4FD9-8F45-A0B8304C84C9::net6.0::SourceGenerate.Tests.AllArgsConstructorTests.ConstructorWithOnlyPropertyTest&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::6C3B5795-93DE-4FD9-8F45-A0B8304C84C9::net6.0::SourceGenerate.Tests.AllArgsConstructorTests.ConstructorWithOnlyFieldTest&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::6C3B5795-93DE-4FD9-8F45-A0B8304C84C9::net6.0::SourceGenerate.Tests.AllArgsConstructorTests.ConstructorWithOnlyInternalModifierTest&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::6C3B5795-93DE-4FD9-8F45-A0B8304C84C9::net6.0::SourceGenerate.Tests.AllArgsConstructorTests.ConstructorWithOnlyPrivateModifierTest&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::6C3B5795-93DE-4FD9-8F45-A0B8304C84C9::net6.0::SourceGenerate.Tests.AllArgsConstructorTests.ConstructorWithOnlyProtectedModifierTest&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::6C3B5795-93DE-4FD9-8F45-A0B8304C84C9::net6.0::SourceGenerate.Tests.AllArgsConstructorTests.ConstructorWithOnlyPublicModifierTest&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d84f646a_002D6246_002D4d69_002D89a4_002De5f4b00a95ba/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Solution /&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
