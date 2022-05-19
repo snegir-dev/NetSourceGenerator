@@ -21,15 +21,12 @@ internal class BuilderGenerator : AdditionalMethodPatternGenerator, IIncremental
         var className = symbol.Name;
         var builderClassName = $"{symbol.Name}Builder";
 
-        switch (symbol.TypeKind)
+        dataStructure = symbol.TypeKind switch
         {
-            case TypeKind.Class:
-                dataStructure = symbol.TypeKind.ToString().ToLower();
-                break;
-            case TypeKind.Structure:
-                dataStructure = "struct";
-                break;
-        }
+            TypeKind.Class => symbol.TypeKind.ToString().ToLower(),
+            TypeKind.Structure => "struct",
+            _ => dataStructure
+        };
 
         var propertiesMember = MemberHandler
             .GetMemberNameWithType(symbol, MemberType.All, AccessType.All);
@@ -47,7 +44,8 @@ internal class BuilderGenerator : AdditionalMethodPatternGenerator, IIncremental
         return classBuilder;
     }
 
-    protected override string GenerateMethods(Dictionary<string, ITypeSymbol> propertiesMember, ITypeSymbol @class)
+    protected override string GenerateMethods(Dictionary<string, ITypeSymbol> propertiesMember, 
+        ITypeSymbol @class)
     {
         var methods = "";
 
