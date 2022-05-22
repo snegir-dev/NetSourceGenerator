@@ -17,7 +17,7 @@ public static class TypeSymbolExtension
 
         if (value is int enumValue)
         {
-            return Enum.Parse<T>(enumValue.ToString());
+            return (T?)Enum.Parse(typeof(T), enumValue.ToString());
         }
         
         return null;
