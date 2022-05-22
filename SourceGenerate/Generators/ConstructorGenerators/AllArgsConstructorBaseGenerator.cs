@@ -50,22 +50,22 @@ internal class AllArgsConstructorBaseGenerator : RequiredArgsConstructorBase, II
         const string paramsTemplate = @"*type* *arg-name*";
         const string bodyConstructorTemplate = @"this.*member* = *ctor-param*;";
 
-        foreach (var (memberName, value) in memberPropertiesWithType)
+        foreach (var member in memberPropertiesWithType)
         {
-            var memberType = value.Name;
-            var ctorParam = memberName.ToLower().Replace("_", string.Empty);
+            var memberType = member.Value.Name;
+            var ctorParam = member.Key.ToLower().Replace("_", string.Empty);
 
             parameters += paramsTemplate
                 .Replace("*type*", memberType)
                 .Replace("*arg-name*", ctorParam) + ", ";
 
             bodyConstructor += bodyConstructorTemplate
-                .Replace("*member*", memberName)
+                .Replace("*member*", member.Key)
                 .Replace("*ctor-param*", ctorParam) + "\n";
         }
 
         // remove the last comma and space
-        parameters = parameters[..^2];
+        parameters = parameters.Substring(0, parameters.Length - 2);
 
         return (parameters, bodyConstructor);
     }
