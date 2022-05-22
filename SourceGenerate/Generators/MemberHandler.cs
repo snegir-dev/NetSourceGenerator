@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
+﻿using Microsoft.CodeAnalysis;
 using SourceGenerate.Domain.Enum;
 
 namespace SourceGenerate.Generators;
