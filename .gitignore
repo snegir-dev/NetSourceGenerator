@@ -7,3 +7,5 @@ SourceGenerate/obj
 
 SourceGenerate.Tests/bin
 SourceGenerate.Tests/obj
+
+SourceGenerate/Generators/FileDebug.cs
