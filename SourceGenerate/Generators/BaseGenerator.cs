@@ -41,7 +41,7 @@ internal abstract class BaseGenerator
         }
     }
 
-    private bool IsExistAttribute(SyntaxNode node, CancellationToken cancellationToken)
+    protected virtual bool IsExistAttribute(SyntaxNode node, CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)
             return false;
@@ -56,7 +56,7 @@ internal abstract class BaseGenerator
         };
     }
 
-    private ITypeSymbol? GetTypeSymbolOrNull(GeneratorSyntaxContext context,
+    protected virtual ITypeSymbol? GetTypeSymbolOrNull(GeneratorSyntaxContext context,
         CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)
