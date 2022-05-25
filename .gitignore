@@ -1,11 +1,11 @@
 .idea
 
-SourceGenerate.RealTimeTests
+SourceGenerator.RealTimeTests
 
-SourceGenerate/bin
-SourceGenerate/obj
+SourceGenerator/bin
+SourceGenerator/obj
 
-SourceGenerate.Tests/bin
-SourceGenerate.Tests/obj
+SourceGenerator.Tests/bin
+SourceGenerator.Tests/obj
 
-SourceGenerate/FileDebug.cs
+SourceGenerator/FileDebug.cs
