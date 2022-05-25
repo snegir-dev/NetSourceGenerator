@@ -40,7 +40,9 @@ internal class AsyncMethodGenerator : BaseAsyncMethodGenerator, IIncrementalGene
                 .Select(p => p.Name));
 
             var accessModifier = method.DeclaredAccessibility.ToString().ToLower();
-            var returnType = method.ReturnType.SpecialType == SpecialType.System_Void ? "Task" : "";
+            var returnType = method.ReturnType.SpecialType == SpecialType.System_Void
+                ? "Task"
+                : $"Task<{method.ReturnType}>";
             var useStatic = method.IsStatic ? "static" : "";
 
             methods += methodTemplate
@@ -67,7 +69,7 @@ internal class AsyncMethodGenerator : BaseAsyncMethodGenerator, IIncrementalGene
         var argsList = typesString.Select((s, i) => $"{s} {argsName[i]}").ToList();
 
         var args = string.Join(", ", argsList);
- 
+
         return args;
     }
 }

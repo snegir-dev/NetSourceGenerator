@@ -8,7 +8,7 @@ public class AsyncMethodTemplate : ITemplate
             @"
                 *access-modifier* *use-static* *return-type* *method-name*Async(*args*)
                 {
-                    return Task.FromResult(() => *method-name*(*args-name*));
+                    return Task.Run(() => *method-name*(*args-name*));
                 }
 
             ";
