@@ -1,20 +1,13 @@
-﻿using SourceGenerator.Domain.Attributes;
+﻿using System.Threading.Tasks;
+using SourceGenerator.Domain.Attributes;
 using Xunit;
 
 namespace SourceGenerator.Tests.AsyncMethods;
 
 public class AsyncMethodTests
 {
-    private Car _car = new();
-    
-    [Fact]
-    public async void ReturnVoidMethodTest()
-    {
-        // var result = await _car.ReturnVoidMethodAsync("");
-        //
-        // Assert.Equal("Work", result);
-    }
-    
+    private readonly Car _car = new();
+
     [Fact]
     public async void ReturnStringMethodTest()
     {
@@ -26,12 +19,6 @@ public class AsyncMethodTests
 
 internal partial class Car
 {
-    [Async]
-    public void ReturnVoidMethod(out string s)
-    {
-        s = "work";
-    }
-    
     [Async]
     public string ReturnStringMethod()
     {
