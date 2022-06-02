@@ -1,21 +1,27 @@
-﻿using SourceGenerator.Domain.Attributes;
+﻿using System.Threading.Tasks;
+using SourceGenerator.Domain.Attributes;
 using Xunit;
 
 namespace SourceGenerator.Tests.AsyncMethods;
 
 public class AsyncMethodTests
 {
+    private readonly Car _car = new();
+
     [Fact]
-    public void R()
+    public async void ReturnStringMethodTest()
     {
-        var car = new Car();
+        var result = await _car.ReturnStringMethodAsync();
+        
+        Assert.Equal("Work", result);
     }
 }
 
-partial class Car
+internal partial class Car
 {
     [Async]
-    public void Work(int w)
+    public string ReturnStringMethod()
     {
+        return "Work";
     }
 }
