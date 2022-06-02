@@ -10,7 +10,7 @@ namespace SourceGenerator.Analyzers.CodeFixes;
 [ExportCodeFixProvider(LanguageNames.CSharp)]
 internal class NotMustBeStaticCodeFix : BaseCodeFix
 {
-    private static readonly string DiagnosticId = DiagnosticDescriptions.TypeNotMustBePartial.Id;
+    private static readonly string DiagnosticId = DiagnosticDescriptions.TypeNotMustBeStatic.Id;
 
     public override ImmutableArray<string> FixableDiagnosticIds { get; } =
         ImmutableArray.Create(DiagnosticId);
@@ -23,8 +23,10 @@ internal class NotMustBeStaticCodeFix : BaseCodeFix
             return;
 
         var declaration = (TypeDeclarationSyntax)root.FindNode(context.Span);
+        
         var staticModifier = declaration.Modifiers
             .FirstOrDefault(s => s.IsKind(SyntaxKind.StaticKeyword));
+        
         var newListModifiers = declaration.Modifiers.Remove(staticModifier);
 
         var newDeclaration = declaration

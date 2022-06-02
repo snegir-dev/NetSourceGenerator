@@ -12,7 +12,7 @@ namespace SourceGenerator.Analyzers;
 internal class NotMustBeStaticAnalyzer : BaseAnalyzer
 {
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
-        ImmutableArray.Create(DiagnosticDescriptions.TypeNotMustBePartial);
+        ImmutableArray.Create(DiagnosticDescriptions.TypeNotMustBeStatic);
 
     protected override void Check(SyntaxNodeAnalysisContext context)
     {
@@ -38,7 +38,7 @@ internal class NotMustBeStaticAnalyzer : BaseAnalyzer
             return;
 
         var diagnostic = Diagnostic.Create(
-            DiagnosticDescriptions.TypeNotMustBePartial,
+            DiagnosticDescriptions.TypeNotMustBeStatic,
             node.Identifier.GetLocation(), node.Identifier.Text);
         
         context.ReportDiagnostic(diagnostic);

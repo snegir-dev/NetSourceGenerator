@@ -36,8 +36,7 @@ internal class AsyncMethodGenerator : BaseAsyncMethodGenerator, IIncrementalGene
                 continue;
 
             var methodArgs = GenerateArgsMethod(method);
-            var methodArgsName = string.Join(", ", method.Parameters
-                .Select(p => p.Name));
+            var methodArgsName = GenerateArgsMethodName(method);
 
             var accessModifier = method.DeclaredAccessibility.ToString().ToLower();
             var returnType = method.ReturnType.SpecialType == SpecialType.System_Void
@@ -61,12 +60,37 @@ internal class AsyncMethodGenerator : BaseAsyncMethodGenerator, IIncrementalGene
 
     protected override string GenerateArgsMethod(IMethodSymbol method)
     {
-        var typesString = method.Parameters.Select(p => p.Type.ToString())
+        var typeStrings = method.Parameters
+            .Select(p => p.Type.ToString())
             .ToList();
-        var argsName = method.Parameters.Select(p => p.Name.ToString())
+        var argsNames = method.Parameters
+            .Select(p => p.Name.ToString())
             .ToList();
 
-        var argsList = typesString.Select((s, i) => $"{s} {argsName[i]}").ToList();
+        var argsList = new List<string>();
+
+        for (var i = 0; i < method.Parameters.Length; i++)
+        {
+            argsList.Add($"{typeStrings[i]} {argsNames[i]}");
+        }
+
+        var args = string.Join(", ", argsList);
+
+        return args;
+    }
+
+    private string GenerateArgsMethodName(IMethodSymbol method)
+    {
+        var argsNames = method.Parameters
+            .Select(p => p.Name.ToString())
+            .ToList();
+
+        var argsList = new List<string>();
+
+        for (var i = 0; i < method.Parameters.Length; i++)
+        {
+            argsList.Add($"{argsNames[i]}");
+        }
 
         var args = string.Join(", ", argsList);
 

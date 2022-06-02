@@ -17,7 +17,9 @@ internal abstract class BaseAnalyzer : DiagnosticAnalyzer
 
         context.RegisterSyntaxNodeAction(Check,
             SyntaxKind.ClassDeclaration,
-            SyntaxKind.StructDeclaration);
+            SyntaxKind.StructDeclaration,
+            SyntaxKind.MethodDeclaration,
+            SyntaxKind.Parameter);
     }
 
     protected abstract void Check(SyntaxNodeAnalysisContext context);
