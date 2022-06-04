@@ -10,10 +10,14 @@ namespace SourceGenerator.Analyzers.CodeFixes;
 [ExportCodeFixProvider(LanguageNames.CSharp)]
 internal class NotMustBeStaticCodeFix : BaseCodeFix
 {
-    private static readonly string DiagnosticId = DiagnosticDescriptions.TypeNotMustBeStatic.Id;
+    protected sealed override string DiagnosticId { get; } = DiagnosticDescriptions.TypeNotMustBeStatic.Id;
 
-    public override ImmutableArray<string> FixableDiagnosticIds { get; } =
-        ImmutableArray.Create(DiagnosticId);
+    public override ImmutableArray<string> FixableDiagnosticIds { get; }
+
+    public NotMustBeStaticCodeFix()
+    {
+        FixableDiagnosticIds = ImmutableArray.Create(DiagnosticId);
+    }
 
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
@@ -22,23 +26,39 @@ internal class NotMustBeStaticCodeFix : BaseCodeFix
         if (root == null)
             return;
 
-        var declaration = (TypeDeclarationSyntax)root.FindNode(context.Span);
-        
-        var staticModifier = declaration.Modifiers
+        var typeDeclaration = (TypeDeclarationSyntax)root.FindNode(context.Span);
+
+        var typeWithStaticModifier = typeDeclaration.Modifiers
             .FirstOrDefault(s => s.IsKind(SyntaxKind.StaticKeyword));
-        
-        var newListModifiers = declaration.Modifiers.Remove(staticModifier);
 
-        var newDeclaration = declaration
+        var newListModifiers = typeDeclaration.Modifiers.Remove(typeWithStaticModifier);
+
+        var newTypeDeclaration = typeDeclaration
             .WithModifiers(newListModifiers);
-        var newRoot = root.ReplaceNode(declaration, newDeclaration);
+        var newSyntaxNode = root.ReplaceNode(typeDeclaration, newTypeDeclaration);
 
-        context.RegisterCodeFix(
-            CodeAction.Create(
-                $"Remove 'static' from {declaration.Identifier.Text}",
-                c => Task.FromResult(context.Document
-                    .WithSyntaxRoot(newRoot)),
-                DiagnosticId),
-            context.Diagnostics);
+        var codeAction = CodeActionCreate(typeDeclaration, context, newSyntaxNode);
+
+        if (codeAction != null)
+        {
+            context.RegisterCodeFix(codeAction, context.Diagnostics);
+        }
+    }
+
+    protected override CodeAction? CodeActionCreate(object declarationSyntax,
+        CodeFixContext context, SyntaxNode syntaxNode)
+    {
+        if (declarationSyntax is not TypeDeclarationSyntax typeDeclaration)
+            return null;
+
+        var title = $"Remove 'static' from {typeDeclaration.Identifier.Text}";
+        var newSyntaxNode = Task.FromResult(context.Document.WithSyntaxRoot(syntaxNode));
+
+        var codeAction = CodeAction.Create(
+            title,
+            _ => newSyntaxNode,
+            DiagnosticId);
+
+        return codeAction;
     }
 }

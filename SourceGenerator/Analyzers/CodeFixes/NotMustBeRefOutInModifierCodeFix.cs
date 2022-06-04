@@ -10,11 +10,15 @@ namespace SourceGenerator.Analyzers.CodeFixes;
 [ExportCodeFixProvider(LanguageNames.CSharp)]
 internal class NotMustBeRefOutInModifierCodeFix : BaseCodeFix
 {
-    private static readonly string DiagnosticId = DiagnosticDescriptions.ArgumentNotMustWithRefOutInModifier.Id;
+    protected sealed override string DiagnosticId { get; } = DiagnosticDescriptions.ArgumentNotMustWithRefOutInModifier.Id;
 
-    public override ImmutableArray<string> FixableDiagnosticIds { get; } =
-        ImmutableArray.Create(DiagnosticId);
-
+    public override ImmutableArray<string> FixableDiagnosticIds { get; }
+    
+    public NotMustBeRefOutInModifierCodeFix()
+    {
+        FixableDiagnosticIds = ImmutableArray.Create(DiagnosticId);
+    }
+    
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
         var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
@@ -38,14 +42,33 @@ internal class NotMustBeRefOutInModifierCodeFix : BaseCodeFix
         var newParameter = parameterSyntax
             .WithModifiers(parameterWithoutRefModifier);
         
-        var newRoot = root.ReplaceNode(parameterSyntax, newParameter);
+        var newSyntaxNode = root.ReplaceNode(parameterSyntax, newParameter);
+
+        CodeActionCreate(parameterSyntax, context, newSyntaxNode);
         
         context.RegisterCodeFix(
             CodeAction.Create(
                 $"Remove '{parameterWithRefModifier.Text}' modifier",
                 c => Task.FromResult(context.Document
-                    .WithSyntaxRoot(newRoot)),
+                    .WithSyntaxRoot(newSyntaxNode)),
                 DiagnosticId),
             context.Diagnostics);
+    }
+
+    protected override CodeAction? CodeActionCreate(object declarationSyntax, 
+        CodeFixContext context, SyntaxNode syntaxNode)
+    {
+        if (declarationSyntax is not ParameterSyntax parameterSyntax)
+            return null;
+        
+        var title = $"Remove '{parameterSyntax.Identifier.Text}' modifier";
+        var newSyntaxNode = Task.FromResult(context.Document.WithSyntaxRoot(syntaxNode));
+
+        var codeAction = CodeAction.Create(
+            title,
+            _ => newSyntaxNode,
+            DiagnosticId);
+
+        return codeAction;
     }
 }
