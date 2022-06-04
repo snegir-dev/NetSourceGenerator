@@ -10,10 +10,14 @@ namespace SourceGenerator.Analyzers.CodeFixes;
 [ExportCodeFixProvider(LanguageNames.CSharp)]
 internal class MustBePartialCodeFix : BaseCodeFix
 {
-    private static string DiagnosticId { get; } = DiagnosticDescriptions.TypeMustBePartial.Id;
+    protected sealed override string DiagnosticId { get; } = DiagnosticDescriptions.TypeMustBePartial.Id;
 
-    public override ImmutableArray<string> FixableDiagnosticIds { get; } =
-        ImmutableArray.Create(DiagnosticId);
+    public override ImmutableArray<string> FixableDiagnosticIds { get; }
+
+    public MustBePartialCodeFix()
+    {
+        FixableDiagnosticIds = ImmutableArray.Create(DiagnosticId);
+    }
 
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
@@ -23,18 +27,33 @@ internal class MustBePartialCodeFix : BaseCodeFix
         if (root == null)
             return;
 
-        var declaration = (TypeDeclarationSyntax)root.FindNode(context.Span);
+        var typeDeclaration = (TypeDeclarationSyntax)root.FindNode(context.Span);
 
-        var newDeclaration = declaration.AddModifiers(SyntaxFactory.Token(SyntaxKind.PartialKeyword));
-        var newRoot = root.ReplaceNode(declaration, newDeclaration);
+        var newTypeDeclaration = typeDeclaration.AddModifiers(SyntaxFactory.Token(SyntaxKind.PartialKeyword));
+        var newSyntaxNode = root.ReplaceNode(typeDeclaration, newTypeDeclaration);
 
-        context.RegisterCodeFix(
-            CodeAction.Create(
-                $"Make '{declaration.Identifier.Text}' partial",
-                c => Task.FromResult(context.Document
-                    .WithSyntaxRoot(newRoot)),
-                DiagnosticId
-            ),
-            context.Diagnostics);
+        var codeAction = CodeActionCreate(typeDeclaration, context, newSyntaxNode);
+
+        if (codeAction != null)
+        {
+            context.RegisterCodeFix(codeAction, context.Diagnostics);
+        }
+    }
+
+    protected override CodeAction? CodeActionCreate(object declarationSyntax,
+        CodeFixContext context, SyntaxNode syntaxNode)
+    {
+        if (declarationSyntax is not TypeDeclarationSyntax typeDeclarationSyntax)
+            return null;
+
+        var title = $"Make '{typeDeclarationSyntax.Identifier.Text}' partial";
+        var newSyntaxNode = Task.FromResult(context.Document.WithSyntaxRoot(syntaxNode));
+
+        var codeAction = CodeAction.Create(
+            title,
+            _ => newSyntaxNode,
+            DiagnosticId);
+
+        return codeAction;
     }
 }
