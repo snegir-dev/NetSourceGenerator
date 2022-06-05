@@ -17,7 +17,7 @@ internal class MustBePartialAnalyzer : BaseAnalyzer
     {
         var namedTypeSymbol = context.Compilation
             .GetTypeByMetadataName(typeof(PartialAttribute).FullName!);
-        
+
         if (namedTypeSymbol == null)
             return;
 
@@ -29,16 +29,33 @@ internal class MustBePartialAnalyzer : BaseAnalyzer
 
         if (isPartial == false)
             return;
-        
-        var node = (TypeDeclarationSyntax)context.Node;
 
-        if (node.Modifiers.Any(p => p.IsKind(SyntaxKind.PartialKeyword)))
+        var declarationSyntax = (TypeDeclarationSyntax)context.Node;
+
+        if (declarationSyntax.Modifiers.Any(p => p.IsKind(SyntaxKind.PartialKeyword)))
             return;
+
+        var diagnostic = CreateDiagnostic(declarationSyntax);
+        if (diagnostic == null)
+            return;
+
+        context.ReportDiagnostic(diagnostic);
+    }
+
+    protected override Diagnostic? CreateDiagnostic(object declarationSyntax)
+    {
+        if (declarationSyntax is not TypeDeclarationSyntax typeDeclarationSyntax)
+            return null;
+
+        var location = typeDeclarationSyntax.Identifier.GetLocation();
+        var nameTypeIdentifier = typeDeclarationSyntax.Identifier.Text;
 
         var diagnostic = Diagnostic.Create(
             DiagnosticDescriptions.TypeMustBePartial,
-            node.Identifier.GetLocation(), node.Identifier.Text);
+            location, 
+            nameTypeIdentifier
+        );
 
-        context.ReportDiagnostic(diagnostic);
+        return diagnostic;
     }
 }

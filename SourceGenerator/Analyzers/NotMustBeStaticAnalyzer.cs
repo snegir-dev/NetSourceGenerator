@@ -21,26 +21,42 @@ internal class NotMustBeStaticAnalyzer : BaseAnalyzer
 
         if (nameTypeSymbol == null)
             return;
-        
+
         var isStatic = context.ContainingSymbol?.GetAttributes()
             .Select(a => a.AttributeClass?.GetAttributes())
             .Select(i => i!.Value
                 .Any(a => a.AttributeClass?.Name == nameof(NoStaticAttribute)))
             .Any(b => b);
         
-
         if (isStatic == false)
             return;
-        
-        var node = (TypeDeclarationSyntax)context.Node;
 
-        if (!node.Modifiers.Any(p => p.IsKind(SyntaxKind.StaticKeyword)))
+        var declarationSyntax = (TypeDeclarationSyntax)context.Node;
+
+        if (!declarationSyntax.Modifiers.Any(p => p.IsKind(SyntaxKind.StaticKeyword)))
             return;
+
+        var diagnostic = CreateDiagnostic(declarationSyntax);
+        if (diagnostic == null)
+            return;
+
+        context.ReportDiagnostic(diagnostic);
+    }
+
+    protected override Diagnostic? CreateDiagnostic(object declarationSyntax)
+    {
+        if (declarationSyntax is not TypeDeclarationSyntax typeDeclarationSyntax)
+            return null;
+
+        var location = typeDeclarationSyntax.Identifier.GetLocation();
+        var nameTypeIdentifier = typeDeclarationSyntax.Identifier.Text;
 
         var diagnostic = Diagnostic.Create(
             DiagnosticDescriptions.TypeNotMustBeStatic,
-            node.Identifier.GetLocation(), node.Identifier.Text);
-        
-        context.ReportDiagnostic(diagnostic);
+            location,
+            nameTypeIdentifier
+        );
+
+        return diagnostic;
     }
 }
