@@ -1,8 +1,4 @@
-﻿using System.ComponentModel;
-using System.Reflection;
-using Microsoft.CodeAnalysis;
-using SourceGenerator.Domain.Enum;
-using SourceGenerator.Generators;
+﻿using Microsoft.CodeAnalysis;
 
 namespace SourceGenerator.Extensions;
 

@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using SourceGenerator.Domain.Attributes;
 using SourceGenerator.Templates;
 using SourceGenerator.Templates.Constructors;

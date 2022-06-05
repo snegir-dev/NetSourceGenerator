@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using SourceGenerator.Domain.Attributes;
+﻿using SourceGenerator.Domain.Attributes;
 using Xunit;
 
 namespace SourceGenerator.Tests.AsyncMethods;

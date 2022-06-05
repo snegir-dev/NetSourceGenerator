@@ -1,6 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Diagnostics;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using SourceGenerator.Extensions;
 using SourceGenerator.Domain.Attributes;
 using SourceGenerator.Domain.Enum;

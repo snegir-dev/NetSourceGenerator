@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Text;
+﻿using System.Text;
 using Microsoft.CodeAnalysis;
 using SourceGenerator.Domain.Attributes;
 using SourceGenerator.Domain.Enum;
