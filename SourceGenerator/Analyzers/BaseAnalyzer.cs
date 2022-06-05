@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace SourceGenerator.Analyzers;
@@ -24,4 +25,6 @@ internal abstract class BaseAnalyzer : DiagnosticAnalyzer
     }
 
     protected abstract void Check(SyntaxNodeAnalysisContext context);
+
+    protected abstract Diagnostic? CreateDiagnostic(object declarationSyntax);
 }
