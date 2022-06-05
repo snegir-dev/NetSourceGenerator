@@ -1,7 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Diagnostics;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Formatting;
+﻿using Microsoft.CodeAnalysis;
 using SourceGenerator.Domain.Attributes;
 using SourceGenerator.Templates;
 using SourceGenerator.Templates.Patterns;

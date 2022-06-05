@@ -1,6 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Editing;
 using SourceGenerator.Domain.Attributes;
 using SourceGenerator.Templates;
 using SourceGenerator.Templates.Methods;

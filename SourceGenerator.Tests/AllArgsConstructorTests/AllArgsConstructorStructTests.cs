@@ -1,5 +1,4 @@
 ﻿using SourceGenerator.Domain.Attributes;
-using SourceGenerator.Domain.Enum;
 using Xunit;
 
 namespace SourceGenerator.Tests.AllArgsConstructorTests;
