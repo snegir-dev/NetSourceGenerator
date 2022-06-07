@@ -6,11 +6,10 @@ public class AsyncMethodTemplate : ITemplate
     {
         return 
             @"
-                *access-modifier* *use-static* *return-type* *method-name*Async(*args*)
-                {
-                    return Task.Run(() => *method-name*(*args-name*));
-                }
-
+        *access-modifier* *use-static* *return-type* *method-name*Async(*args*)
+        {
+            return Task.Run(() => *method-name*(*args-name*));
+        }
             ";
     }
 }

@@ -6,15 +6,15 @@ public class TypeStructureForAsyncMethodTemplate : ITemplate
     {
         return 
             @"
-                using System.Threading.Tasks;
+using System.Threading.Tasks;
 
-                namespace *namespace*
-                {
-                    partial *type-object* *type-name*
-                    {
-                        *methods*
-                    }
-                }
+namespace *namespace*
+{
+    partial *type-object* *type-name*
+    {
+        *methods*
+    }
+}
             ";
     }
 }

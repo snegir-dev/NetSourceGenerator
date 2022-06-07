@@ -32,11 +32,11 @@ internal abstract class BaseGenerator
         {
             if (symbol == null) return;
 
-            var partialClass = GeneratePartialMember(symbol);
+            var partialType = GeneratePartialMember(symbol);
 
-            if (partialClass != null)
+            if (partialType != null)
             {
-                context.AddSource($"{symbol.ContainingNamespace}{symbol.Name}.g.cs", partialClass);
+                context.AddSource($"{symbol.ContainingNamespace}{symbol.Name}.g.cs", partialType);
             }
         }
     }

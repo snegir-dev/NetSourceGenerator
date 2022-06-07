@@ -5,34 +5,33 @@ public class BuilderTemplate : ITemplate
     public string GetTemplate()
     {
         return
-            $@"
-
+            @"
 namespace *namespace*
-{{
-    partial *type-object* *type-object-name*
-    {{
-        public static *builder-type-object-name* Builder()
-        {{
-            return new *builder-type-object-name*();
-        }}
+{
+    partial *type-object* *type-name*
+    {
+        public static *builder-type-name*Builder Builder()
+        {
+            return new *builder-type-name*Builder();
+        }
 
-        public *type-object* *builder-type-object-name*
-        {{
-            private *type-object-name* *lower-type-object-name*;
-            public *builder-type-object-name*()
-            {{
-                *lower-type-object-name* = new *type-object-name*();
-            }}
+        public *type-object* *builder-type-name*Builder
+        {
+            private *type-name* *lower-type-name*;
+            public *builder-type-name*Builder()
+            {
+                *lower-type-name* = new *type-name*();
+            }
 
             *methods*
 
-            public *type-object-name* Build()
-            {{
-                return *lower-type-object-name*;
-            }}
-        }}
-    }}
-}}
+            public *type-name* Build()
+            {
+                return *lower-type-name*;
+            }
+        }
+    }
+}
             ";
     }
 }

@@ -16,8 +16,8 @@ internal class AllArgsConstructorBaseGenerator : RequiredArgsConstructorBase, II
     protected override string? GeneratePartialMember(ITypeSymbol symbol)
     {
         var @namespace = symbol.ContainingNamespace.ToString();
-        var dataStructure = GetDataStructureType(symbol);
-        var className = symbol.Name;
+        var dataType = GetDataType(symbol);
+        var typeName = symbol.Name;
         
         var memberType = symbol.GetAttributeArgument<MemberType>() ?? MemberType.All;
         var accessType = symbol.GetAttributeArgument<AccessType>() ?? AccessType.All;
@@ -31,8 +31,8 @@ internal class AllArgsConstructorBaseGenerator : RequiredArgsConstructorBase, II
 
         var classWithAllArgsConstructor = Template.GetTemplate()
             .Replace("*namespace*", @namespace)
-            .Replace("*type-object*", dataStructure)
-            .Replace("*type-object-name*", className)
+            .Replace("*type-object*", dataType)
+            .Replace("*type-name*", typeName)
             .Replace("*params*", constructor.parameters)
             .Replace("*appropriation-params*", constructor.bodyConstructor);
 
@@ -68,20 +68,15 @@ internal class AllArgsConstructorBaseGenerator : RequiredArgsConstructorBase, II
         return (parameters, bodyConstructor);
     }
 
-    protected override string GetDataStructureType(ITypeSymbol symbol)
+    protected override string GetDataType(ITypeSymbol symbol)
     {
-        var dataStructure = "";
-        
-        switch (symbol.TypeKind)
+        var dataType = symbol.TypeKind switch
         {
-            case TypeKind.Class:
-                dataStructure = symbol.TypeKind.ToString().ToLower();
-                break;
-            case TypeKind.Structure:
-                dataStructure = "struct";
-                break;
-        }
+            TypeKind.Class => symbol.TypeKind.ToString().ToLower(),
+            TypeKind.Structure => "struct",
+            _ => ""
+        };
 
-        return dataStructure;
+        return dataType;
     }
 }
