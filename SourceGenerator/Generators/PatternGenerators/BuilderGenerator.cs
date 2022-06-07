@@ -4,6 +4,7 @@ using SourceGenerator.Domain.Attributes;
 using SourceGenerator.Domain.Enum;
 using SourceGenerator.Templates;
 using SourceGenerator.Templates.Patterns;
+using SourceGenerator.Templates.Patterns.Builder;
 
 namespace SourceGenerator.Generators.PatternGenerators;
 
@@ -12,19 +13,19 @@ internal class BuilderGenerator : AdditionalMethodPatternGenerator, IIncremental
 {
     protected override Type Type { get; } = typeof(BuilderAttribute);
     protected override ITemplate Template { get; } = new BuilderTemplate();
+    protected override ITemplate MethodTemplate { get; } = new BuilderMethodTemplate();
 
     protected override string GeneratePartialMember(ITypeSymbol symbol)
     {
         var @namespace = symbol.ContainingNamespace.ToString();
-        var dataStructure = "";
-        var className = symbol.Name;
-        var builderClassName = $"{symbol.Name}Builder";
+        var typeName = symbol.Name;
+        var builderTypeName = symbol.Name;
 
-        dataStructure = symbol.TypeKind switch
+        var dataType = symbol.TypeKind switch
         {
             TypeKind.Class => symbol.TypeKind.ToString().ToLower(),
             TypeKind.Structure => "struct",
-            _ => dataStructure
+            _ => null
         };
 
         var propertiesMember = MemberHandler
@@ -32,31 +33,23 @@ internal class BuilderGenerator : AdditionalMethodPatternGenerator, IIncremental
 
         var methods = GenerateMethods(propertiesMember, symbol);
 
-        var classBuilder = Template.GetTemplate()
+        var objectType = Template.GetTemplate()
             .Replace("*namespace*", @namespace)
-            .Replace("*type-object*", dataStructure)
-            .Replace("*type-object-name*", className)
-            .Replace("*builder-type-object-name*", builderClassName)
-            .Replace("*lower-type-object-name*", className.ToLower())
+            .Replace("*type-object*", dataType)
+            .Replace("*type-name*", typeName)
+            .Replace("*builder-type-name*", builderTypeName)
+            .Replace("*lower-type-name*", typeName.ToLower())
             .Replace("*methods*", methods);
 
-        return classBuilder;
+        return objectType;
     }
 
     protected override string GenerateMethods(Dictionary<string, ITypeSymbol> propertiesMember, 
-        ITypeSymbol @class)
+        ITypeSymbol dataType)
     {
         var methods = "";
 
-        const string methodTemplate = @"
-                    public *builder-type-object-name* *method-name*(*parameter*)
-                    {
-                        *lower-type-object-name*.*member* = *parameter-member*;
-                        return this;
-                    }
-                ";
-
-        var builderClassName = $"{@class.Name}Builder";
+        var dataTypeName = dataType.Name;
 
         foreach (var member in propertiesMember)
         {
@@ -67,14 +60,13 @@ internal class BuilderGenerator : AdditionalMethodPatternGenerator, IIncremental
             };
 
             var parameter = $"{member.Value} {member.Key.ToLower()}";
-            var lowerClassMame = @class.Name.ToLower();
             var parameterMember = member.Key.ToLower();
 
-            methods += methodTemplate
-                .Replace("*builder-type-object-name*", builderClassName)
-                .Replace("*method-name*", $"Set{methodName}")
+            methods += MethodTemplate.GetTemplate()
+                .Replace("*builder-type-name*", dataTypeName)
+                .Replace("*method-name*", methodName.ToString())
                 .Replace("*parameter*", parameter)
-                .Replace("*lower-type-object-name*", lowerClassMame)
+                .Replace("*lower-type-name*", dataTypeName.ToLower())
                 .Replace("*member*", member.Key)
                 .Replace("*parameter-member*", parameterMember);
         }

@@ -4,20 +4,20 @@ public class AllArgsConstructorTemplate : ITemplate
 {
     public string GetTemplate()
     {
-        return
+        return 
             @"
-                using System;
+using System;
 
-                namespace *namespace*
-                {
-                    partial *type-object* *type-object-name*
-                    {
-                        public *type-object-name*(*params*)
-                        {
-                            *appropriation-params*
-                        }
-                    }
-                }                
+namespace *namespace*
+{
+    partial *type-object* *type-name*
+    {
+        public *type-name*(*params*)
+        {
+            *appropriation-params*
+        }
+    }
+}                
             ";
     }
 }

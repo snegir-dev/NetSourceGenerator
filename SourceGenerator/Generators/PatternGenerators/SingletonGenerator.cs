@@ -2,6 +2,7 @@
 using SourceGenerator.Domain.Attributes;
 using SourceGenerator.Templates;
 using SourceGenerator.Templates.Patterns;
+using SourceGenerator.Templates.Patterns.Singleton;
 
 namespace SourceGenerator.Generators.PatternGenerators;
 
@@ -14,14 +15,14 @@ internal class SingletonGenerator : BaseGenerator, IIncrementalGenerator
     protected override string GeneratePartialMember(ITypeSymbol symbol)
     {
         var @namespace = symbol.ContainingNamespace.ToString()!;
-        var dataStructure = symbol.TypeKind.ToString().ToLower();
-        var dataStructureName = symbol.Name;
+        var dataType = symbol.TypeKind.ToString().ToLower();
+        var typeName = symbol.Name;
 
-        var partialClass = Template.GetTemplate()
+        var partialType = Template.GetTemplate()
             .Replace("*namespace*", @namespace)
-            .Replace("*data-structure*", dataStructure)
-            .Replace("*data-structure-name*", dataStructureName);
+            .Replace("*type-object*", dataType)
+            .Replace("*type-name*", typeName);
 
-        return partialClass;
+        return partialType;
     }
 }

@@ -6,15 +6,15 @@ public class NoArgsConstructorTemplate : ITemplate
     {
         return
             @"
-                namespace *namespace* 
-                {
-                    partial class *class-name*
-                    {
-                        public *class-name*()
-                        {
-                        }
-                    }
-                }                
+namespace *namespace* 
+{
+    partial class *class-name*
+    {
+        public *class-name*()
+        {
+        }
+    }
+}                
             ";
     }
 }
