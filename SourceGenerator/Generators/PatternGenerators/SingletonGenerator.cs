@@ -2,6 +2,7 @@
 using SourceGenerator.Domain.Attributes;
 using SourceGenerator.Templates;
 using SourceGenerator.Templates.Patterns;
+using SourceGenerator.Templates.Patterns.Singleton;
 
 namespace SourceGenerator.Generators.PatternGenerators;
 

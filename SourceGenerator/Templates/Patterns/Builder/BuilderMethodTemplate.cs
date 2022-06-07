@@ -1,4 +1,4 @@
-﻿namespace SourceGenerator.Templates.Patterns;
+﻿namespace SourceGenerator.Templates.Patterns.Builder;
 
 internal class BuilderMethodTemplate : ITemplate
 {

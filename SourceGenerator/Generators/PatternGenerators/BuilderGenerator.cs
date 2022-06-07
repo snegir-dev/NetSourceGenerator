@@ -4,6 +4,7 @@ using SourceGenerator.Domain.Attributes;
 using SourceGenerator.Domain.Enum;
 using SourceGenerator.Templates;
 using SourceGenerator.Templates.Patterns;
+using SourceGenerator.Templates.Patterns.Builder;
 
 namespace SourceGenerator.Generators.PatternGenerators;
 

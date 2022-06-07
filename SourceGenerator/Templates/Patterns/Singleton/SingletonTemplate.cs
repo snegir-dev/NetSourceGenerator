@@ -1,4 +1,4 @@
-﻿namespace SourceGenerator.Templates.Patterns;
+﻿namespace SourceGenerator.Templates.Patterns.Singleton;
 
 public class SingletonTemplate : ITemplate
 {

@@ -1,4 +1,4 @@
-﻿namespace SourceGenerator.Templates.Methods;
+﻿namespace SourceGenerator.Templates.Methods.Async;
 
 public class TypeStructureForAsyncMethodTemplate : ITemplate
 {

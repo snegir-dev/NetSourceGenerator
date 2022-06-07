@@ -2,6 +2,7 @@
 using SourceGenerator.Domain.Attributes;
 using SourceGenerator.Templates;
 using SourceGenerator.Templates.Methods;
+using SourceGenerator.Templates.Methods.Async;
 
 namespace SourceGenerator.Generators.Methods;
 
