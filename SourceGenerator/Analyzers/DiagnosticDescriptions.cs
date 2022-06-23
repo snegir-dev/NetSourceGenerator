@@ -15,4 +15,7 @@ public static class DiagnosticDescriptions
 
     public static readonly DiagnosticDescriptor NotMustPublicCtor =
         new("T004", "The type not must have a public constructor", "The type {0} not must have a public constructor", "Usage", DiagnosticSeverity.Error, true);
+    
+    public static readonly DiagnosticDescriptor NotMustInternalCtor =
+        new("T005", "The type not must have a internal constructor", "The type {0} not must have a internal constructor", "Usage", DiagnosticSeverity.Error, true);
 }
