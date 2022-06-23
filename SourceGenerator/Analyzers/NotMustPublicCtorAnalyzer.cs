@@ -8,38 +8,44 @@ using SourceGenerator.Domain.Attributes;
 namespace SourceGenerator.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-internal class NotMustBeStaticAnalyzer : BaseAnalyzer
+internal class NotMustPublicCtorAnalyzer : BaseAnalyzer
 {
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
-        ImmutableArray.Create(DiagnosticDescriptions.TypeNotMustBeStatic);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
+        = ImmutableArray.Create(DiagnosticDescriptions.NotMustPublicCtor);
 
     protected override void Check(SyntaxNodeAnalysisContext context)
     {
         var nameTypeSymbol = context.Compilation
-            .GetTypeByMetadataName(typeof(NoStaticAttribute).FullName!);
+            .GetTypeByMetadataName(typeof(NotMustPublicCtorAttribute).FullName);
 
         if (nameTypeSymbol == null)
             return;
 
-        var isStatic = context.ContainingSymbol?.GetAttributes()
+        var isTagged = context.ContainingSymbol?.GetAttributes()
             .Select(a => a.AttributeClass?.GetAttributes())
             .Select(i => i!.Value
-                .Any(a => a.AttributeClass?.Name == nameof(NoStaticAttribute)))
+                .Any(a => a.AttributeClass?.Name == nameof(NotMustPublicCtorAttribute)))
             .Any(b => b);
-        
-        if (isStatic == false)
-            return;
 
+        if (isTagged is false or null)
+            return;
+        
         var declarationSyntax = (TypeDeclarationSyntax)context.Node;
 
-        if (!declarationSyntax.Modifiers.Any(p => p.IsKind(SyntaxKind.StaticKeyword)))
-            return;
-        
-        var diagnostic = CreateDiagnostic(declarationSyntax);
-        if (diagnostic == null)
-            return;
+        var membersDeclarationSyntax = declarationSyntax.Members
+            .Where(m => m.IsKind(SyntaxKind.ConstructorDeclaration) &&
+                        m.Modifiers
+                            .Any(s => s.IsKind(SyntaxKind.PublicKeyword)))
+            .ToList();
 
-        context.ReportDiagnostic(diagnostic);
+        if (membersDeclarationSyntax.Count != 0)
+        {
+            var diagnostic = CreateDiagnostic(declarationSyntax);
+            if (diagnostic == null)
+                return;
+
+            context.ReportDiagnostic(diagnostic);
+        }
     }
 
     protected override Diagnostic? CreateDiagnostic(object declarationSyntax)
@@ -51,7 +57,7 @@ internal class NotMustBeStaticAnalyzer : BaseAnalyzer
         var nameTypeIdentifier = typeDeclarationSyntax.Identifier.Text;
 
         var diagnostic = Diagnostic.Create(
-            DiagnosticDescriptions.TypeNotMustBeStatic,
+            DiagnosticDescriptions.NotMustPublicCtor,
             location,
             nameTypeIdentifier
         );
