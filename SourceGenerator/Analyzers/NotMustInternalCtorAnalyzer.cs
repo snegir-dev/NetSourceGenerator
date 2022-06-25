@@ -20,8 +20,11 @@ internal class NotMustInternalCtorAnalyzer : BaseAnalyzer
 
         if (nameTypeSymbol == null)
             return;
-
-        var isTagged = context.ContainingSymbol?.GetAttributes()
+        
+        if (context.Node is not ConstructorDeclarationSyntax constructorSyntax)
+            return;
+        
+        var isTagged = context.ContainingSymbol?.ContainingSymbol.GetAttributes()
             .Select(a => a.AttributeClass?.GetAttributes())
             .Select(i => i!.Value
                 .Any(a => a.AttributeClass?.Name == nameof(NotMustInternalCtorAttribute)))
@@ -29,18 +32,13 @@ internal class NotMustInternalCtorAnalyzer : BaseAnalyzer
 
         if (isTagged is false or null)
             return;
-        
-        var declarationSyntax = (TypeDeclarationSyntax)context.Node;
 
-        var membersDeclarationSyntax = declarationSyntax.Members
-            .Where(m => m.IsKind(SyntaxKind.ConstructorDeclaration) &&
-                        m.Modifiers
-                            .Any(s => s.IsKind(SyntaxKind.InternalKeyword)))
-            .ToList();
+        var isExistInternalCtor = constructorSyntax.Modifiers
+            .Any(s => s.IsKind(SyntaxKind.InternalKeyword));
 
-        if (membersDeclarationSyntax.Count != 0)
+        if (isExistInternalCtor)
         {
-            var diagnostic = CreateDiagnostic(declarationSyntax);
+            var diagnostic = CreateDiagnostic(constructorSyntax);
             if (diagnostic == null)
                 return;
 
@@ -50,11 +48,11 @@ internal class NotMustInternalCtorAnalyzer : BaseAnalyzer
 
     protected override Diagnostic? CreateDiagnostic(object declarationSyntax)
     {
-        if (declarationSyntax is not TypeDeclarationSyntax typeDeclarationSyntax)
+        if (declarationSyntax is not ConstructorDeclarationSyntax constructorSyntax)
             return null;
 
-        var location = typeDeclarationSyntax.Identifier.GetLocation();
-        var nameTypeIdentifier = typeDeclarationSyntax.Identifier.Text;
+        var location = constructorSyntax.Identifier.GetLocation();
+        var nameTypeIdentifier = constructorSyntax.Identifier.Text;
 
         var diagnostic = Diagnostic.Create(
             DiagnosticDescriptions.NotMustInternalCtor,
