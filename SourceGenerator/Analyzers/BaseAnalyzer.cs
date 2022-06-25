@@ -19,6 +19,7 @@ internal abstract class BaseAnalyzer : DiagnosticAnalyzer
             SyntaxKind.ClassDeclaration,
             SyntaxKind.StructDeclaration,
             SyntaxKind.MethodDeclaration,
+            SyntaxKind.ConstructorDeclaration,
             SyntaxKind.Parameter);
     }
 
