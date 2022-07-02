@@ -10,7 +10,7 @@ namespace SourceGenerator.Analyzers.CodeFixes;
 [ExportCodeFixProvider(LanguageNames.CSharp)]
 internal class NotMustPublicCtorCodeFix : BaseCodeFix
 {
-    protected sealed override string DiagnosticId { get; } = DiagnosticDescriptions.NotMustPublicCtor.Id;
+    protected override string DiagnosticId { get; } = DiagnosticDescriptions.NotMustPublicCtor.Id;
     public override ImmutableArray<string> FixableDiagnosticIds { get; }
     
     public NotMustPublicCtorCodeFix()
