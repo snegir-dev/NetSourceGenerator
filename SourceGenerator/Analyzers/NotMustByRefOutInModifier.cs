@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using SourceGenerator.Domain.Attributes;
+using SourceGenerator.Extensions;
 
 namespace SourceGenerator.Analyzers;
 
@@ -28,8 +29,9 @@ internal class NotMustByRefOutInModifier : BaseAnalyzer
 
         var refKinds = new List<SyntaxKind> { SyntaxKind.RefKeyword, SyntaxKind.OutKeyword, SyntaxKind.InKeyword };
 
-        var isTagged = symbol.GetAttributes()
-            .Any(a => a.AttributeClass?.Name == nameof(AsyncAttribute));
+        var isTagged = symbol
+            .GetAttributes()
+            .AnyAttribute(nameof(AsyncAttribute));
 
         var isContainRef = parameterSyntax.Modifiers
             .Select(s => refKinds

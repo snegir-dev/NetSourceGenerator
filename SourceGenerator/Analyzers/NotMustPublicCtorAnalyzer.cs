@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using SourceGenerator.Domain.Attributes;
+using SourceGenerator.Extensions;
 
 namespace SourceGenerator.Analyzers;
 
@@ -24,11 +25,9 @@ internal class NotMustPublicCtorAnalyzer : BaseAnalyzer
         if (context.Node is not ConstructorDeclarationSyntax constructorSyntax)
             return;
 
-        var isTagged = context.ContainingSymbol?.ContainingSymbol.GetAttributes()
-            .Select(a => a.AttributeClass?.GetAttributes())
-            .Select(i => i!.Value
-                .Any(a => a.AttributeClass?.Name == nameof(NotMustPublicCtorAttribute)))
-            .Any(b => b);
+        var isTagged = context.ContainingSymbol?.ContainingSymbol
+            .GetAttributes()
+            .AnyInnerAttribute(nameof(NotMustPublicCtorAttribute));
         
         if (isTagged is false or null)
             return;
