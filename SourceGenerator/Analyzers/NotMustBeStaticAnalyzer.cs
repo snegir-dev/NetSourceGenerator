@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using SourceGenerator.Domain.Attributes;
+using SourceGenerator.Extensions;
 
 namespace SourceGenerator.Analyzers;
 
@@ -22,12 +23,9 @@ internal class NotMustBeStaticAnalyzer : BaseAnalyzer
             return;
 
         var isStatic = context.ContainingSymbol?.GetAttributes()
-            .Select(a => a.AttributeClass?.GetAttributes())
-            .Select(i => i!.Value
-                .Any(a => a.AttributeClass?.Name == nameof(NoStaticAttribute)))
-            .Any(b => b);
+            .AnyInnerAttribute(nameof(NoStaticAttribute));
         
-        if (isStatic == false)
+        if (isStatic is false or null)
             return;
 
         var declarationSyntax = (TypeDeclarationSyntax)context.Node;

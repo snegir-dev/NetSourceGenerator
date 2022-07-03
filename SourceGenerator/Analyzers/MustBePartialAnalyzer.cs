@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using SourceGenerator.Domain.Attributes;
+using SourceGenerator.Extensions;
 
 namespace SourceGenerator.Analyzers;
 
@@ -21,11 +22,9 @@ internal class MustBePartialAnalyzer : BaseAnalyzer
         if (namedTypeSymbol == null)
             return;
 
-        var isPartial = context.ContainingSymbol?.GetAttributes()
-            .Select(a => a.AttributeClass?.GetAttributes())
-            .Select(m => m!.Value
-                .Any(a => a.AttributeClass?.Name == nameof(PartialAttribute)))
-            .Any(b => b);
+        var isPartial = context.ContainingSymbol?
+            .GetAttributes()
+            .AnyInnerAttribute(nameof(PartialAttribute));
 
         if (isPartial == false)
             return;
