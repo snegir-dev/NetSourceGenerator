@@ -1,11 +1,12 @@
+.vs
 .idea
 
-SourceGenerator.RealTimeTests
+NetSourceGenerator.RealTimeTests
 
-SourceGenerator/bin
-SourceGenerator/obj
+NetSourceGenerator/bin
+NetSourceGenerator/obj
 
-SourceGenerator.Tests/bin
-SourceGenerator.Tests/obj
+NetSourceGenerator.Tests/bin
+NetSourceGenerator.Tests/obj
 
-SourceGenerator/FileDebug.cs
+NetSourceGenerator/FileDebug.cs
